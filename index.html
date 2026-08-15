@@ -375,7 +375,7 @@
       groups[key].push(data);
     });
 
-    Object.keys(groups).sort().forEach(serviceName => {
+    Object.keys(groups).sort((a, b) => a.localeCompare(b, 'ko')).forEach(serviceName => {
       const items = groups[serviceName];
       // 마지막 수정일 계산
       const lastModified = items.reduce((latest, d) => {
