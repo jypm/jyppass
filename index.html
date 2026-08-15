@@ -160,7 +160,7 @@
     <input type="text" id="m-pw" placeholder="비밀번호">
     <input type="text" id="m-memo" placeholder="메모 (선택)">
     <button class="btn-save" onclick="saveEntry()">저장</button>
-    <button class="btn-cancel" onclick="closeModal()">취소</button>
+    <button class="btn-cancel" onclick="cancelClick()">취소</button>
   </div>
 </div>
 
@@ -205,6 +205,20 @@
   let realId = '';
   let realPw = '';
   const TIMEOUT = 5 * 60;
+
+  // 취소 3번 연속 감지
+  let cancelCount = 0;
+  let cancelTimer = null;
+
+  window.cancelClick = function() {
+    cancelCount++;
+    clearTimeout(cancelTimer);
+    cancelTimer = setTimeout(() => { cancelCount = 0; }, 2000);
+    if (cancelCount >= 3) {
+      cancelCount = 0;
+      closeModal();
+    }
+  }
 
   function mask(str) {
     if (!str) return '';
@@ -328,7 +342,6 @@
         </div>
       `;
 
-      // 드래그 핸들에서만 드래그 시작 (PC)
       const handle = card.querySelector('.drag-handle');
       handle.addEventListener('mousedown', () => { card.draggable = true; });
       document.addEventListener('mouseup', () => { card.draggable = false; });
@@ -361,7 +374,6 @@
         }
       });
 
-      // 터치 드래그 - 핸들에서만
       let touchTimer = null;
       let isDragging = false;
       let dragEl = null;
@@ -411,6 +423,7 @@
 
   window.openAddModal = function() {
     editingId = null;
+    cancelCount = 0;
     document.getElementById('modal-title').textContent = '계정 추가';
     document.getElementById('m-service').value = '';
     document.getElementById('m-id').value = '';
@@ -421,6 +434,7 @@
 
   window.openEditModal = function(id, service, uid, pw, memo) {
     editingId = id;
+    cancelCount = 0;
     document.getElementById('modal-title').textContent = '계정 수정';
     document.getElementById('m-service').value = service;
     document.getElementById('m-id').value = uid;
@@ -430,6 +444,7 @@
   }
 
   window.closeModal = function() {
+    cancelCount = 0;
     document.getElementById('modal').classList.remove('show');
   }
 
