@@ -8,13 +8,17 @@
   <meta name="theme-color" content="#000000">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
-  <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="64x64">
   <title>JYP 비밀번호 관리</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior-y: contain;
+    }
     body {
       background: #000; color: #ccc; font-family: 'Segoe UI', sans-serif;
-      overscroll-behavior-y: contain;
       user-select: none;
       -webkit-user-select: none;
     }
@@ -40,7 +44,10 @@
       background: #111; color: #aaa; font-size: 16px; cursor: pointer; width: 240px;
     }
 
-    #main-screen { display: none; padding: 20px; max-width: 700px; margin: 0 auto; }
+    #main-screen {
+      display: none; padding: 20px; max-width: 700px; margin: 0 auto;
+      overflow-y: auto; height: 100vh;
+    }
     .header {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 20px;
@@ -194,21 +201,17 @@
   let realPw = '';
   const TIMEOUT = 5 * 60;
 
-  // 마스킹 함수
   function mask(str) {
     if (!str) return '';
     if (str.length <= 3) return str[0] + '*'.repeat(str.length - 1);
     return str.slice(0, 2) + '*'.repeat(str.length - 3) + str.slice(-1);
   }
 
-  // 꾹 누르면 보이기 설정
   function setupReveal(elId, wrapId, getRealVal) {
     const wrap = document.getElementById(wrapId);
     const el = document.getElementById(elId);
-
     const show = () => { el.textContent = getRealVal(); };
     const hide = () => { el.textContent = mask(getRealVal()); };
-
     wrap.addEventListener('mousedown', show);
     wrap.addEventListener('mouseup', hide);
     wrap.addEventListener('mouseleave', hide);
@@ -220,23 +223,19 @@
   setupReveal('v-id', 'v-id-wrap', () => realId);
   setupReveal('v-pw', 'v-pw-wrap', () => realPw);
 
-  // 우클릭 방지
   document.addEventListener('contextmenu', e => e.preventDefault());
 
-  // 뒤로가기 방지
   history.pushState(null, null, location.href);
   window.addEventListener('popstate', () => {
     history.pushState(null, null, location.href);
   });
 
-  // 아이디 저장 불러오기
   const savedName = localStorage.getItem('savedName');
   if (savedName) {
     document.getElementById('name-input').value = savedName;
     document.getElementById('save-id').checked = true;
   }
 
-  // 타이머
   function startTimer() {
     let remaining = TIMEOUT;
     clearInterval(timerInterval);
@@ -258,7 +257,6 @@
     document.addEventListener(e, resetTimer);
   });
 
-  // 로그인
   window.doLogin = async function() {
     const name = document.getElementById('name-input').value.trim();
     const pin = document.getElementById('pin-input').value.trim();
