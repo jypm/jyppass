@@ -482,19 +482,19 @@
     loadList();
   }
 
-  let currentViewId = '';
-  let currentViewService = '';
-  let currentViewIdVal = '';
-  let currentViewPw = '';
-  let currentViewMemo = '';
+  window.currentViewId = '';
+  window.currentViewService = '';
+  window.currentViewIdVal = '';
+  window.currentViewPw = '';
+  window.currentViewMemo = '';
 
   window.viewEntry = function(docId, service, id, pw, memo) {
     realPw = pw;
-    currentViewId = docId;
-    currentViewService = service;
-    currentViewIdVal = id;
-    currentViewPw = pw;
-    currentViewMemo = memo;
+    window.currentViewId = docId;
+    window.currentViewService = service;
+    window.currentViewIdVal = id;
+    window.currentViewPw = pw;
+    window.currentViewMemo = memo;
     document.getElementById('v-service').textContent = service;
     document.getElementById('v-id').textContent = id || '(없음)';
     document.getElementById('v-pw').textContent = mask(pw);
