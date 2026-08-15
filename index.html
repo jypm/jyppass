@@ -228,7 +228,7 @@
       closeConfirm(); history.go(1); return;
     }
     history.go(1);
-    openExitModal();
+    setTimeout(() => openExitModal(), 50);
   });
 
   window.openExitModal = function() {
