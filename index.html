@@ -46,41 +46,16 @@
     .search-box::placeholder { color: #444; }
     .add-btn { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333; background: #111; color: #aaa; font-size: 16px; cursor: pointer; margin-bottom: 16px; }
 
-    /* 서비스 그룹 */
-    .service-group { margin-bottom: 10px; }
-    .service-header {
-      background: #111; border-radius: 10px; padding: 14px 16px;
-      display: flex; justify-content: space-between; align-items: center;
-      border: 1px solid #222; cursor: pointer; transition: opacity 0.2s;
+    /* 서비스 카드 */
+    .service-card {
+      background: #111; border-radius: 10px; padding: 16px;
+      margin-bottom: 10px; display: flex; justify-content: space-between;
+      align-items: center; border: 1px solid #222; cursor: pointer;
+      transition: opacity 0.2s;
     }
-    .service-header:active { opacity: 0.7; }
+    .service-card:active { opacity: 0.7; }
     .service-name { font-size: 16px; color: #ddd; font-weight: 500; }
-    .service-count { font-size: 12px; color: #555; background: #1a1a1a; padding: 3px 8px; border-radius: 10px; }
-    .service-arrow { font-size: 12px; color: #444; transition: transform 0.2s; }
-    .service-arrow.open { transform: rotate(90deg); }
-
-    .service-items { display: none; padding: 4px 0 0 12px; }
-    .service-items.open { display: block; }
-
-    .card {
-      background: #0d0d0d; border-radius: 8px; padding: 12px;
-      margin-bottom: 6px; display: flex; justify-content: space-between;
-      align-items: center; border: 1px solid #1a1a1a;
-      transition: opacity 0.2s; cursor: pointer;
-    }
-    .card:active { opacity: 0.7; }
-    .card-info { flex: 1; min-width: 0; }
-    .card-info p { font-size: 13px; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-actions { display: flex; gap: 8px; flex-shrink: 0; }
-    .card-actions button {
-      width: 32px; height: 32px; border-radius: 8px; border: none;
-      cursor: pointer; font-size: 16px; display: flex; align-items: center;
-      justify-content: center; background: transparent;
-    }
-    .btn-edit { color: #6a9fd8; }
-    .btn-del { color: #c0392b; }
-    .btn-edit:hover { background: #1a2a3a; }
-    .btn-del:hover { background: #2a1010; }
+    .service-badge { font-size: 11px; color: #555; background: #1a1a1a; padding: 3px 8px; border-radius: 10px; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 100; }
     .modal.show { display: flex; }
@@ -92,22 +67,36 @@
     .btn-save { background: #222; }
     .btn-cancel { background: #1a1a1a; }
 
+    /* 아이디 목록 팝업 */
+    .id-list-item {
+      padding: 14px; border-radius: 8px; background: #0d0d0d;
+      border: 1px solid #1a1a1a; cursor: pointer; display: flex;
+      justify-content: space-between; align-items: center;
+      transition: opacity 0.2s;
+    }
+    .id-list-item:active { opacity: 0.7; }
+    .id-list-item p { font-size: 14px; color: #bbb; }
+    .id-list-actions { display: flex; gap: 8px; }
+    .id-list-actions button { width: 32px; height: 32px; border-radius: 8px; border: none; cursor: pointer; font-size: 16px; background: transparent; }
+    .btn-edit { color: #6a9fd8; }
+    .btn-del { color: #c0392b; }
+
     .masked { font-size: 16px; margin-bottom: 4px; cursor: pointer; padding: 8px; border-radius: 8px; background: #0a0a0a; border: 1px solid #222; color: #aaa; user-select: none; -webkit-user-select: none; }
     .masked .hint { font-size: 11px; color: #444; margin-top: 4px; }
     .visible-text { font-size: 16px; margin-bottom: 4px; padding: 8px; border-radius: 8px; background: #0a0a0a; border: 1px solid #222; color: #ccc; }
 
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); justify-content: center; align-items: center; z-index: 200; }
     .overlay.show { display: flex; }
-    .popup-box { background: #111; border-radius: 16px; padding: 28px 24px; width: 280px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-    .popup-box .popup-icon { font-size: 36px; }
+    .popup-box { background: #111; border-radius: 16px; padding: 24px; width: 300px; display: flex; flex-direction: column; gap: 10px; }
+    .popup-box .popup-icon { font-size: 36px; text-align: center; }
     .popup-box p { font-size: 15px; color: #ccc; text-align: center; line-height: 1.5; }
     .popup-box .popup-name { color: #ff6b6b; font-size: 16px; font-weight: bold; }
-    .popup-buttons { display: flex; gap: 10px; width: 100%; }
+    .popup-buttons { display: flex; gap: 10px; width: 100%; margin-top: 6px; }
     .popup-buttons button { flex: 1; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-size: 14px; }
     .popup-yes-red { background: #3a0000; color: #ff6b6b; }
     .popup-yes { background: #222; color: #ccc; }
     .popup-no { background: #1a1a1a; color: #888; }
-    .popup-ok { background: #222; color: #ccc; width: 100%; }
+    .popup-ok { background: #222; color: #ccc; width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-size: 14px; }
   </style>
 </head>
 <body>
@@ -155,10 +144,19 @@
   </div>
 </div>
 
+<!-- 아이디 목록 팝업 (2개 이상) -->
+<div class="overlay" id="id-list-modal">
+  <div class="popup-box" style="border:1px solid #222;">
+    <h3 id="id-list-title" style="color:#888;"></h3>
+    <div id="id-list-items" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;"></div>
+    <button class="popup-ok" onclick="closeIdListModal()">닫기</button>
+  </div>
+</div>
+
 <!-- 보기 모달 -->
-<div class="modal" id="view-modal">
-  <div class="modal-box">
-    <h3 id="v-service"></h3>
+<div class="overlay" id="view-modal">
+  <div class="popup-box" style="border:1px solid #222;">
+    <h3 id="v-service" style="color:#888;"></h3>
     <div class="field-label">아이디</div>
     <div class="visible-text" id="v-id"></div>
     <div class="field-label">비밀번호</div>
@@ -167,8 +165,8 @@
       <div class="hint">꾹 누르면 표시</div>
     </div>
     <div class="field-label">메모</div>
-    <p id="v-memo" style="font-size:14px;color:#666;margin-bottom:8px"></p>
-    <button class="btn-cancel" onclick="closeViewModal()">닫기</button>
+    <p id="v-memo" style="font-size:14px;color:#666;margin-bottom:4px"></p>
+    <button class="popup-ok" onclick="closeViewModal()">닫기</button>
   </div>
 </div>
 
@@ -177,9 +175,7 @@
   <div class="popup-box" style="border:1px solid #333;">
     <div class="popup-icon" id="alert-icon">⚠️</div>
     <p id="alert-msg"></p>
-    <div class="popup-buttons">
-      <button class="popup-ok" onclick="closeAlert()">확인</button>
-    </div>
+    <button class="popup-ok" onclick="closeAlert()">확인</button>
   </div>
 </div>
 
@@ -231,7 +227,6 @@
   let allDocs = [];
   const TIMEOUT = 5 * 60;
 
-  // 뒤로가기 처리
   let blocking = false;
   history.pushState(null, '', location.href);
   history.pushState(null, '', location.href);
@@ -246,34 +241,22 @@
 
     if (document.getElementById('exit-modal').classList.contains('show')) { closeExitModal(); return; }
     if (document.getElementById('view-modal').classList.contains('show')) { closeViewModal(); return; }
+    if (document.getElementById('id-list-modal').classList.contains('show')) { closeIdListModal(); return; }
     if (document.getElementById('modal').classList.contains('show')) { closeModal(); return; }
     if (document.getElementById('confirm-modal').classList.contains('show')) { closeConfirm(); return; }
     if (document.getElementById('alert-modal').classList.contains('show')) { closeAlert(); return; }
     setTimeout(() => openExitModal(), 100);
   });
 
-  // 알림 팝업
   window.showAlert = function(msg, icon = '⚠️') {
     document.getElementById('alert-icon').textContent = icon;
     document.getElementById('alert-msg').textContent = msg;
     document.getElementById('alert-modal').classList.add('show');
   }
-  window.closeAlert = function() {
-    document.getElementById('alert-modal').classList.remove('show');
-  }
-
+  window.closeAlert = function() { document.getElementById('alert-modal').classList.remove('show'); }
   window.openExitModal = function() { document.getElementById('exit-modal').classList.add('show'); }
   window.closeExitModal = function() { document.getElementById('exit-modal').classList.remove('show'); }
-  window.exitApp = function() {
-    closeExitModal();
-    doLogout();
-  }
-
-  function mask(str) {
-    if (!str) return '';
-    if (str.length <= 3) return str[0] + '*'.repeat(str.length - 1);
-    return str.slice(0, 2) + '*'.repeat(str.length - 3) + str.slice(-1);
-  }
+  window.exitApp = function() { closeExitModal(); doLogout(); }
 
   // 비밀번호만 꾹 누르면 표시
   const pwWrap = document.getElementById('v-pw-wrap');
@@ -293,6 +276,12 @@
   if (savedName) {
     document.getElementById('name-input').value = savedName;
     document.getElementById('save-id').checked = true;
+  }
+
+  function mask(str) {
+    if (!str) return '(없음)';
+    if (str.length <= 3) return str[0] + '*'.repeat(str.length - 1);
+    return str.slice(0, 2) + '*'.repeat(str.length - 3) + str.slice(-1);
   }
 
   function startTimer() {
@@ -376,56 +365,52 @@
 
     Object.keys(groups).sort().forEach(serviceName => {
       const items = groups[serviceName];
-      const group = document.createElement('div');
-      group.className = 'service-group';
-
-      const header = document.createElement('div');
-      header.className = 'service-header';
-      header.innerHTML = `
+      const card = document.createElement('div');
+      card.className = 'service-card';
+      card.innerHTML = `
         <span class="service-name">${serviceName}</span>
-        <div style="display:flex;align-items:center;gap:8px;">
-          ${items.length > 1 ? `<span class="service-count">${items.length}</span>` : ''}
-          <span class="service-arrow">▶</span>
-        </div>
+        ${items.length > 1 ? `<span class="service-badge">${items.length}개</span>` : ''}
       `;
 
-      const itemsEl = document.createElement('div');
-      itemsEl.className = 'service-items';
-
-      // 1개면 바로 펼치기
-      if (items.length === 1) {
-        itemsEl.classList.add('open');
-        header.querySelector('.service-arrow').classList.add('open');
-      }
-
-      header.addEventListener('click', () => {
-        itemsEl.classList.toggle('open');
-        header.querySelector('.service-arrow').classList.toggle('open');
+      card.addEventListener('click', () => {
+        if (items.length === 1) {
+          // 1개면 바로 보기 팝업
+          const d = items[0];
+          viewEntry(d.docId, d.service||'', d.id||'', d.pw||'', d.memo||'');
+        } else {
+          // 2개 이상이면 아이디 목록 팝업
+          openIdListModal(serviceName, items);
+        }
       });
 
-      items.forEach(data => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="card-info">
-            <p>${data.id || '아이디 없음'}</p>
-          </div>
-          <div class="card-actions">
-            <button class="btn-edit" onclick="event.stopPropagation();openEditModal('${data.docId}','${data.service||''}','${data.id||''}','${data.pw||''}','${data.memo||''}')">✏️</button>
-            <button class="btn-del" onclick="event.stopPropagation();openConfirm('${data.docId}','${data.service||''}')">🗑️</button>
-          </div>
-        `;
-        card.addEventListener('click', () => {
-          viewEntry(data.docId, data.service||'', data.id||'', data.pw||'', data.memo||'');
-        });
-        itemsEl.appendChild(card);
-      });
-
-      group.appendChild(header);
-      group.appendChild(itemsEl);
-      listEl.appendChild(group);
+      listEl.appendChild(card);
     });
   }
+
+  // 아이디 목록 팝업
+  window.openIdListModal = function(serviceName, items) {
+    document.getElementById('id-list-title').textContent = serviceName;
+    const listEl = document.getElementById('id-list-items');
+    listEl.innerHTML = '';
+    items.forEach(data => {
+      const item = document.createElement('div');
+      item.className = 'id-list-item';
+      item.innerHTML = `
+        <p>${data.id || '(아이디 없음)'}</p>
+        <div class="id-list-actions">
+          <button class="btn-edit" onclick="event.stopPropagation();closeIdListModal();openEditModal('${data.docId}','${data.service||''}','${data.id||''}','${data.pw||''}','${data.memo||''}')">✏️</button>
+          <button class="btn-del" onclick="event.stopPropagation();closeIdListModal();openConfirm('${data.docId}','${data.service||''}')">🗑️</button>
+        </div>
+      `;
+      item.addEventListener('click', () => {
+        closeIdListModal();
+        viewEntry(data.docId, data.service||'', data.id||'', data.pw||'', data.memo||'');
+      });
+      listEl.appendChild(item);
+    });
+    document.getElementById('id-list-modal').classList.add('show');
+  }
+  window.closeIdListModal = function() { document.getElementById('id-list-modal').classList.remove('show'); }
 
   window.openAddModal = function() {
     editingId = null;
