@@ -170,6 +170,10 @@
     </div>
     <div class="field-label">메모</div>
     <p id="v-memo" style="font-size:14px;color:#666;margin-bottom:4px"></p>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="popup-ok" style="background:#2a1f00;color:#6a9fd8;" onclick="closeViewModal();openEditModal(currentViewId,currentViewService,currentViewIdVal,currentViewPw,currentViewMemo)">✏️ 수정</button>
+      <button class="popup-ok" style="background:#2a0000;color:#c0392b;" onclick="closeViewModal();openConfirm(currentViewId,currentViewService)">🗑️ 삭제</button>
+    </div>
     <button class="popup-ok" onclick="closeViewModal()">닫기</button>
   </div>
 </div>
@@ -478,8 +482,19 @@
     loadList();
   }
 
+  let currentViewId = '';
+  let currentViewService = '';
+  let currentViewIdVal = '';
+  let currentViewPw = '';
+  let currentViewMemo = '';
+
   window.viewEntry = function(docId, service, id, pw, memo) {
     realPw = pw;
+    currentViewId = docId;
+    currentViewService = service;
+    currentViewIdVal = id;
+    currentViewPw = pw;
+    currentViewMemo = memo;
     document.getElementById('v-service').textContent = service;
     document.getElementById('v-id').textContent = id || '(없음)';
     document.getElementById('v-pw').textContent = mask(pw);
