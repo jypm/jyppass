@@ -29,7 +29,6 @@
       background: #111; color: #ccc; font-size: 16px; width: 100%;
       user-select: text; -webkit-user-select: text;
     }
-    .login-box input#pin-input { letter-spacing: 0; }
     .login-box button {
       padding: 12px; border-radius: 10px; border: 1px solid #333;
       background: #111; color: #aaa; font-size: 16px; cursor: pointer; width: 100%;
@@ -37,25 +36,29 @@
     }
 
     #main-screen { display: none; padding: 20px; max-width: 700px; margin: 0 auto; overflow-y: auto; height: 100vh; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .header h2 { color: #aaa; }
     .header-right { display: flex; align-items: center; gap: 12px; }
     #timer { font-size: 12px; color: #555; }
     .header button { padding: 8px 16px; border-radius: 8px; border: 1px solid #333; background: #111; color: #888; cursor: pointer; }
 
-    .add-btn { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333; background: #111; color: #aaa; font-size: 16px; cursor: pointer; margin-bottom: 20px; }
+    .search-box {
+      width: 100%; padding: 10px 16px; border-radius: 10px; border: 1px solid #333;
+      background: #111; color: #ccc; font-size: 15px; margin-bottom: 14px;
+      user-select: text; -webkit-user-select: text;
+    }
+    .search-box::placeholder { color: #444; }
+
+    .add-btn { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333; background: #111; color: #aaa; font-size: 16px; cursor: pointer; margin-bottom: 16px; }
 
     .card {
       background: #111; border-radius: 10px; padding: 14px 12px;
-      margin-bottom: 12px; display: flex; justify-content: space-between;
+      margin-bottom: 10px; display: flex; justify-content: space-between;
       align-items: center; border: 1px solid #222;
-      transition: opacity 0.2s, transform 0.15s; cursor: pointer;
+      transition: opacity 0.2s; cursor: pointer;
     }
-    .card.dragging { opacity: 0.4; transform: scale(0.98); }
-    .card.drag-over { border-color: #555; background: #1a1a1a; }
+    .card:active { opacity: 0.7; }
     .card-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-    .drag-handle { color: #444; font-size: 18px; cursor: grab; padding: 4px; touch-action: none; flex-shrink: 0; }
-    .drag-handle.active { color: #aaa; }
     .card-info { flex: 1; min-width: 0; }
     .card-info h3 { font-size: 15px; margin-bottom: 2px; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .card-info p { font-size: 12px; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -66,15 +69,32 @@
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 100; }
     .modal.show { display: flex; }
-    .modal-box { background: #111; border-radius: 14px; padding: 24px; width: 320px; display: flex; flex-direction: column; gap: 12px; border: 1px solid #222; }
+    .modal-box { background: #111; border-radius: 14px; padding: 24px; width: 320px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #222; }
     .modal-box h3 { color: #888; margin-bottom: 4px; }
+    .field-label { font-size: 11px; color: #555; margin-bottom: 2px; }
     .modal-box input { padding: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: #ccc; font-size: 14px; width: 100%; user-select: text; -webkit-user-select: text; }
     .modal-box button { padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; color: #aaa; }
     .btn-save { background: #222; }
     .btn-cancel { background: #1a1a1a; }
 
-    .masked { font-size: 16px; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; background: #0a0a0a; border: 1px solid #222; color: #aaa; user-select: none; -webkit-user-select: none; }
+    .masked { font-size: 16px; margin-bottom: 4px; cursor: pointer; padding: 8px; border-radius: 8px; background: #0a0a0a; border: 1px solid #222; color: #aaa; user-select: none; -webkit-user-select: none; }
     .masked .hint { font-size: 11px; color: #444; margin-top: 4px; }
+
+    /* 커스텀 삭제 확인 팝업 */
+    #confirm-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); justify-content: center; align-items: center; z-index: 200; }
+    #confirm-modal.show { display: flex; }
+    .confirm-box { background: #111; border-radius: 16px; padding: 28px 24px; width: 280px; display: flex; flex-direction: column; align-items: center; gap: 16px; border: 1px solid #2a0000; }
+    .confirm-box .confirm-icon { font-size: 36px; }
+    .confirm-box p { font-size: 15px; color: #ccc; text-align: center; line-height: 1.5; }
+    .confirm-box .confirm-name { color: #ff6b6b; font-size: 16px; font-weight: bold; }
+    .confirm-buttons { display: flex; gap: 10px; width: 100%; }
+    .confirm-buttons button { flex: 1; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-size: 14px; }
+    .confirm-yes { background: #3a0000; color: #ff6b6b; }
+    .confirm-no { background: #1a1a1a; color: #888; }
+
+    /* 뒤로가기 토스트 */
+    #back-toast { display: none; position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: #222; color: #aaa; padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 300; border: 1px solid #333; }
+    #back-toast.show { display: block; }
   </style>
 </head>
 <body>
@@ -100,40 +120,62 @@
       <button onclick="doLogout()">로그아웃</button>
     </div>
   </div>
+  <input type="text" class="search-box" id="search-input" placeholder="🔍 검색">
   <button class="add-btn" onclick="openAddModal()">+ 계정 추가</button>
   <div id="list"></div>
 </div>
 
+<!-- 추가/수정 모달 -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <h3 id="modal-title">계정 추가</h3>
-    <input type="text" id="m-service" placeholder="서비스명 (예: 네이버)">
+    <div class="field-label">서비스명</div>
+    <input type="text" id="m-service" placeholder="예: 네이버">
+    <div class="field-label">아이디</div>
     <input type="text" id="m-id" placeholder="아이디">
+    <div class="field-label">비밀번호</div>
     <input type="text" id="m-pw" placeholder="비밀번호">
-    <input type="text" id="m-memo" placeholder="메모 (선택)">
+    <div class="field-label">메모 (선택)</div>
+    <input type="text" id="m-memo" placeholder="메모">
     <button class="btn-save" onclick="saveEntry()">저장</button>
-    <button class="btn-cancel" onclick="cancelClick()">취소</button>
+    <button class="btn-cancel" onclick="closeModal()">취소</button>
   </div>
 </div>
 
+<!-- 보기 모달 -->
 <div class="modal" id="view-modal">
   <div class="modal-box">
     <h3 id="v-service"></h3>
-    <p style="color:#666;font-size:12px">아이디</p>
+    <div class="field-label">아이디</div>
     <div class="masked" id="v-id-wrap">
       <div id="v-id"></div>
       <div class="hint">꾹 누르면 표시</div>
     </div>
-    <p style="color:#666;font-size:12px">비밀번호</p>
+    <div class="field-label">비밀번호</div>
     <div class="masked" id="v-pw-wrap">
       <div id="v-pw"></div>
       <div class="hint">꾹 누르면 표시</div>
     </div>
-    <p style="color:#666;font-size:12px">메모</p>
-    <p id="v-memo" style="font-size:14px;margin-bottom:12px"></p>
+    <div class="field-label">메모</div>
+    <p id="v-memo" style="font-size:14px;color:#666;margin-bottom:8px"></p>
     <button class="btn-cancel" onclick="closeViewModal()">닫기</button>
   </div>
 </div>
+
+<!-- 커스텀 삭제 확인 팝업 -->
+<div id="confirm-modal">
+  <div class="confirm-box">
+    <div class="confirm-icon">🗑️</div>
+    <p>삭제하시겠어요?<br><span class="confirm-name" id="confirm-name"></span></p>
+    <div class="confirm-buttons">
+      <button class="confirm-no" onclick="closeConfirm()">취소</button>
+      <button class="confirm-yes" onclick="confirmDelete()">삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- 뒤로가기 토스트 -->
+<div id="back-toast">한 번 더 누르면 종료됩니다</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -156,17 +198,51 @@
   let timerInterval = null;
   let realId = '';
   let realPw = '';
+  let deleteTargetId = '';
+  let deleteTargetName = '';
+  let allDocs = [];
   const TIMEOUT = 5 * 60;
 
-  let cancelCount = 0;
-  let cancelTimer = null;
-  window.cancelClick = function() {
-    cancelCount++;
-    clearTimeout(cancelTimer);
-    cancelTimer = setTimeout(() => { cancelCount = 0; }, 2000);
-    if (cancelCount >= 3) { cancelCount = 0; closeModal(); }
-  }
+  // 뒤로가기 3번 종료
+  let backCount = 0;
+  let backTimer = null;
+  let toastTimer = null;
 
+  history.pushState(null, null, location.href);
+  window.addEventListener('popstate', () => {
+    history.pushState(null, null, location.href);
+
+    // 모달 열려있으면 닫기
+    if (document.getElementById('view-modal').classList.contains('show')) {
+      closeViewModal(); return;
+    }
+    if (document.getElementById('modal').classList.contains('show')) {
+      closeModal(); return;
+    }
+    if (document.getElementById('confirm-modal').classList.contains('show')) {
+      closeConfirm(); return;
+    }
+
+    backCount++;
+    clearTimeout(backTimer);
+    clearTimeout(toastTimer);
+
+    const toast = document.getElementById('back-toast');
+    toast.classList.add('show');
+
+    if (backCount >= 2) {
+      backCount = 0;
+      toast.classList.remove('show');
+      window.close();
+      // window.close()가 안되는 경우 앱 최소화 시도
+      if (navigator.app) navigator.app.exitApp();
+    } else {
+      backTimer = setTimeout(() => { backCount = 0; }, 2000);
+      toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 2000);
+    }
+  });
+
+  // 마스킹
   function mask(str) {
     if (!str) return '';
     if (str.length <= 3) return str[0] + '*'.repeat(str.length - 1);
@@ -190,15 +266,15 @@
   setupReveal('v-pw', 'v-pw-wrap', () => realPw);
 
   document.addEventListener('contextmenu', e => e.preventDefault());
-  history.pushState(null, null, location.href);
-  window.addEventListener('popstate', () => { history.pushState(null, null, location.href); });
 
+  // 아이디 저장
   const savedName = localStorage.getItem('savedName');
   if (savedName) {
     document.getElementById('name-input').value = savedName;
     document.getElementById('save-id').checked = true;
   }
 
+  // 타이머
   function startTimer() {
     let remaining = TIMEOUT;
     clearInterval(timerInterval);
@@ -213,6 +289,12 @@
 
   function resetTimer() { if (currentUser) startTimer(); }
   ['click','keydown','mousemove','touchstart'].forEach(e => document.addEventListener(e, resetTimer));
+
+  // 검색
+  document.getElementById('search-input').addEventListener('input', function() {
+    const keyword = this.value.trim().toLowerCase();
+    renderList(keyword);
+  });
 
   window.doLogin = async function() {
     const name = document.getElementById('name-input').value.trim();
@@ -242,32 +324,34 @@
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('main-screen').style.display = 'none';
     document.getElementById('pin-input').value = '';
+    document.getElementById('search-input').value = '';
   }
 
   async function loadList() {
-    const listEl = document.getElementById('list');
-    listEl.innerHTML = '';
     const q = query(collection(db, 'passwords'), where('uid', '==', currentUser.id));
     const snap = await getDocs(q);
+    allDocs = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+    renderList('');
+  }
 
-    const savedOrder = JSON.parse(localStorage.getItem('order_' + currentUser.id) || '[]');
-    let docs = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+  function renderList(keyword) {
+    const listEl = document.getElementById('list');
+    listEl.innerHTML = '';
+    const filtered = keyword
+      ? allDocs.filter(d => d.service.toLowerCase().includes(keyword) || (d.id && d.id.toLowerCase().includes(keyword)))
+      : allDocs;
 
-    if (savedOrder.length > 0) {
-      docs.sort((a, b) => {
-        const ai = savedOrder.indexOf(a.docId);
-        const bi = savedOrder.indexOf(b.docId);
-        return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
-      });
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<p style="color:#444;text-align:center;margin-top:40px;">검색 결과 없음</p>';
+      return;
     }
 
-    docs.forEach(data => {
+    filtered.forEach(data => {
       const card = document.createElement('div');
       card.className = 'card';
       card.setAttribute('data-id', data.docId);
       card.innerHTML = `
         <div class="card-left">
-          <span class="drag-handle">⠿</span>
           <div class="card-info">
             <h3>${data.service}</h3>
             <p>${data.id}</p>
@@ -275,97 +359,18 @@
         </div>
         <div class="card-actions">
           <button class="btn-edit" onclick="event.stopPropagation();openEditModal('${data.docId}','${data.service}','${data.id}','${data.pw}','${data.memo||''}')">수정</button>
-          <button class="btn-del" onclick="event.stopPropagation();delEntry('${data.docId}')">삭제</button>
+          <button class="btn-del" onclick="event.stopPropagation();openConfirm('${data.docId}','${data.service}')">삭제</button>
         </div>
       `;
-
-      // 카드 클릭하면 보기
       card.addEventListener('click', () => {
         viewEntry(data.docId, data.service, data.id, data.pw, data.memo || '');
       });
-
-      const handle = card.querySelector('.drag-handle');
-      handle.addEventListener('mousedown', e => { e.stopPropagation(); card.draggable = true; });
-      document.addEventListener('mouseup', () => { card.draggable = false; });
-
-      card.addEventListener('dragstart', e => {
-        if (!card.draggable) { e.preventDefault(); return; }
-        card.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-      });
-      card.addEventListener('dragend', () => {
-        card.classList.remove('dragging');
-        card.draggable = false;
-        document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over'));
-        saveOrder();
-      });
-      card.addEventListener('dragover', e => {
-        e.preventDefault();
-        if (!card.classList.contains('dragging')) card.classList.add('drag-over');
-      });
-      card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
-      card.addEventListener('drop', e => {
-        e.preventDefault();
-        const dragging = document.querySelector('.card.dragging');
-        if (dragging && dragging !== card) {
-          const allCards = [...listEl.querySelectorAll('.card')];
-          const srcIdx = allCards.indexOf(dragging);
-          const dstIdx = allCards.indexOf(card);
-          if (srcIdx < dstIdx) listEl.insertBefore(dragging, card.nextSibling);
-          else listEl.insertBefore(dragging, card);
-        }
-      });
-
-      let touchTimer = null;
-      let isDragging = false;
-      let dragEl = null;
-
-      handle.addEventListener('touchstart', e => {
-        e.stopPropagation();
-        touchTimer = setTimeout(() => {
-          isDragging = true;
-          dragEl = card;
-          handle.classList.add('active');
-        }, 300);
-      }, { passive: true });
-
-      handle.addEventListener('touchmove', e => {
-        if (!isDragging) { clearTimeout(touchTimer); return; }
-        e.preventDefault();
-        const touch = e.touches[0];
-        const target = document.elementFromPoint(touch.clientX, touch.clientY);
-        const targetCard = target?.closest('.card');
-        if (targetCard && targetCard !== dragEl) {
-          const allCards = [...listEl.querySelectorAll('.card')];
-          const srcIdx = allCards.indexOf(dragEl);
-          const dstIdx = allCards.indexOf(targetCard);
-          if (srcIdx < dstIdx) listEl.insertBefore(dragEl, targetCard.nextSibling);
-          else listEl.insertBefore(dragEl, targetCard);
-        }
-      }, { passive: false });
-
-      handle.addEventListener('touchend', () => {
-        clearTimeout(touchTimer);
-        if (isDragging) {
-          isDragging = false;
-          dragEl = null;
-          handle.classList.remove('active');
-          saveOrder();
-        }
-      });
-
       listEl.appendChild(card);
     });
   }
 
-  function saveOrder() {
-    const cards = [...document.querySelectorAll('.card')];
-    const order = cards.map(c => c.getAttribute('data-id'));
-    localStorage.setItem('order_' + currentUser.id, JSON.stringify(order));
-  }
-
   window.openAddModal = function() {
-    editingId = null; cancelCount = 0;
+    editingId = null;
     document.getElementById('modal-title').textContent = '계정 추가';
     document.getElementById('m-service').value = '';
     document.getElementById('m-id').value = '';
@@ -375,7 +380,7 @@
   }
 
   window.openEditModal = function(docId, service, id, pw, memo) {
-    editingId = docId; cancelCount = 0;
+    editingId = docId;
     document.getElementById('modal-title').textContent = '계정 수정';
     document.getElementById('m-service').value = service;
     document.getElementById('m-id').value = id;
@@ -385,7 +390,6 @@
   }
 
   window.closeModal = function() {
-    cancelCount = 0;
     document.getElementById('modal').classList.remove('show');
   }
 
@@ -404,9 +408,21 @@
     loadList();
   }
 
-  window.delEntry = async function(docId) {
-    if (!confirm('삭제할까요?')) return;
-    await deleteDoc(doc(db, 'passwords', docId));
+  // 커스텀 삭제 확인
+  window.openConfirm = function(docId, name) {
+    deleteTargetId = docId;
+    deleteTargetName = name;
+    document.getElementById('confirm-name').textContent = name;
+    document.getElementById('confirm-modal').classList.add('show');
+  }
+
+  window.closeConfirm = function() {
+    document.getElementById('confirm-modal').classList.remove('show');
+  }
+
+  window.confirmDelete = async function() {
+    await deleteDoc(doc(db, 'passwords', deleteTargetId));
+    closeConfirm();
     loadList();
   }
 
