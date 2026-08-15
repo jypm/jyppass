@@ -37,8 +37,10 @@
     .save-row {
       display: flex; align-items: center; gap: 8px;
       color: #666; font-size: 13px; width: 240px;
+      white-space: nowrap;
     }
-    .save-row input { width: auto; }
+    .save-row input[type="checkbox"] { width: 16px; height: 16px; flex-shrink: 0; }
+    .save-row label { white-space: nowrap; }
     #login-screen button {
       padding: 12px 40px; border-radius: 10px; border: 1px solid #333;
       background: #111; color: #aaa; font-size: 16px; cursor: pointer; width: 240px;
