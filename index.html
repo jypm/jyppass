@@ -72,10 +72,10 @@
       background: #111; border-radius: 10px; padding: 16px;
       margin-bottom: 12px; display: flex; justify-content: space-between;
       align-items: center; border: 1px solid #222;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.15s;
     }
-    .card.dragging { opacity: 0.4; }
-    .card.drag-over { border-color: #555; }
+    .card.dragging { opacity: 0.4; transform: scale(0.98); }
+    .card.drag-over { border-color: #555; background: #1a1a1a; }
     .card-info h3 { font-size: 16px; margin-bottom: 4px; color: #ccc; }
     .card-info p { font-size: 13px; color: #666; }
     .card-left { display: flex; align-items: center; gap: 12px; }
@@ -206,10 +206,9 @@
   let realPw = '';
   const TIMEOUT = 5 * 60;
 
-  // 취소 3번 연속 감지
+  // 취소 3번 연속
   let cancelCount = 0;
   let cancelTimer = null;
-
   window.cancelClick = function() {
     cancelCount++;
     clearTimeout(cancelTimer);
@@ -243,11 +242,8 @@
   setupReveal('v-pw', 'v-pw-wrap', () => realPw);
 
   document.addEventListener('contextmenu', e => e.preventDefault());
-
   history.pushState(null, null, location.href);
-  window.addEventListener('popstate', () => {
-    history.pushState(null, null, location.href);
-  });
+  window.addEventListener('popstate', () => { history.pushState(null, null, location.href); });
 
   const savedName = localStorage.getItem('savedName');
   if (savedName) {
@@ -267,14 +263,8 @@
     }, 1000);
   }
 
-  function resetTimer() {
-    if (!currentUser) return;
-    startTimer();
-  }
-
-  ['click','keydown','mousemove','touchstart'].forEach(e => {
-    document.addEventListener(e, resetTimer);
-  });
+  function resetTimer() { if (currentUser) startTimer(); }
+  ['click','keydown','mousemove','touchstart'].forEach(e => document.addEventListener(e, resetTimer));
 
   window.doLogin = async function() {
     const name = document.getElementById('name-input').value.trim();
@@ -313,12 +303,13 @@
     const snap = await getDocs(q);
 
     const savedOrder = JSON.parse(localStorage.getItem('order_' + currentUser.id) || '[]');
-    let docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // docId를 별도 필드로 분리
+    let docs = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
 
     if (savedOrder.length > 0) {
       docs.sort((a, b) => {
-        const ai = savedOrder.indexOf(a.id);
-        const bi = savedOrder.indexOf(b.id);
+        const ai = savedOrder.indexOf(a.docId);
+        const bi = savedOrder.indexOf(b.docId);
         return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
       });
     }
@@ -326,7 +317,7 @@
     docs.forEach(data => {
       const card = document.createElement('div');
       card.className = 'card';
-      card.setAttribute('data-id', data.id);
+      card.setAttribute('data-id', data.docId);
       card.innerHTML = `
         <div class="card-left">
           <span class="drag-handle">⠿</span>
@@ -336,9 +327,9 @@
           </div>
         </div>
         <div class="card-actions">
-          <button class="btn-show" onclick="viewEntry('${data.id}','${data.service}','${data.id}','${data.pw}','${data.memo||''}')">보기</button>
-          <button class="btn-edit" onclick="openEditModal('${data.id}','${data.service}','${data.id}','${data.pw}','${data.memo||''}')">수정</button>
-          <button class="btn-del" onclick="delEntry('${data.id}')">삭제</button>
+          <button class="btn-show" onclick="viewEntry('${data.docId}','${data.service}','${data.id}','${data.pw}','${data.memo||''}')">보기</button>
+          <button class="btn-edit" onclick="openEditModal('${data.docId}','${data.service}','${data.id}','${data.pw}','${data.memo||''}')">수정</button>
+          <button class="btn-del" onclick="delEntry('${data.docId}')">삭제</button>
         </div>
       `;
 
@@ -432,12 +423,12 @@
     document.getElementById('modal').classList.add('show');
   }
 
-  window.openEditModal = function(id, service, uid, pw, memo) {
-    editingId = id;
+  window.openEditModal = function(docId, service, id, pw, memo) {
+    editingId = docId;
     cancelCount = 0;
     document.getElementById('modal-title').textContent = '계정 수정';
     document.getElementById('m-service').value = service;
-    document.getElementById('m-id').value = uid;
+    document.getElementById('m-id').value = id;
     document.getElementById('m-pw').value = pw;
     document.getElementById('m-memo').value = memo;
     document.getElementById('modal').classList.add('show');
@@ -463,17 +454,17 @@
     loadList();
   }
 
-  window.delEntry = async function(id) {
+  window.delEntry = async function(docId) {
     if (!confirm('삭제할까요?')) return;
-    await deleteDoc(doc(db, 'passwords', id));
+    await deleteDoc(doc(db, 'passwords', docId));
     loadList();
   }
 
-  window.viewEntry = function(id, service, uid, pw, memo) {
-    realId = uid;
+  window.viewEntry = function(docId, service, id, pw, memo) {
+    realId = id;
     realPw = pw;
     document.getElementById('v-service').textContent = service;
-    document.getElementById('v-id').textContent = mask(uid);
+    document.getElementById('v-id').textContent = mask(id);
     document.getElementById('v-pw').textContent = mask(pw);
     document.getElementById('v-memo').textContent = memo || '-';
     document.getElementById('view-modal').classList.add('show');
