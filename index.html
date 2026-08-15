@@ -6,25 +6,25 @@
   <title>JYP 비밀번호 관리</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #1a1a2e; color: #eee; font-family: 'Segoe UI', sans-serif; }
+    body { background: #000; color: #ccc; font-family: 'Segoe UI', sans-serif; }
 
     #login-screen {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; height: 100vh; gap: 20px;
     }
-    #login-screen h1 { font-size: 24px; color: #a78bfa; }
+    #login-screen h1 { font-size: 24px; color: #888; }
     #login-screen input {
-      padding: 12px 20px; border-radius: 10px; border: none;
-      background: #2d2d44; color: #eee; font-size: 18px;
+      padding: 12px 20px; border-radius: 10px; border: 1px solid #333;
+      background: #111; color: #ccc; font-size: 18px;
       text-align: center; letter-spacing: 8px; width: 200px;
     }
     #login-screen button {
       padding: 12px 40px; border-radius: 10px; border: none;
-      background: #a78bfa; color: #fff; font-size: 16px; cursor: pointer;
+      background: #222; color: #aaa; font-size: 16px; cursor: pointer;
     }
     #login-screen select {
-      padding: 10px; border-radius: 10px; border: none;
-      background: #2d2d44; color: #eee; font-size: 14px; width: 200px;
+      padding: 10px; border-radius: 10px; border: 1px solid #333;
+      background: #111; color: #ccc; font-size: 14px; width: 200px;
     }
 
     #main-screen { display: none; padding: 20px; }
@@ -32,55 +32,56 @@
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 20px;
     }
-    .header h2 { color: #a78bfa; }
+    .header h2 { color: #aaa; }
     .header button {
-      padding: 8px 16px; border-radius: 8px; border: none;
-      background: #444; color: #eee; cursor: pointer;
+      padding: 8px 16px; border-radius: 8px; border: 1px solid #333;
+      background: #111; color: #888; cursor: pointer;
     }
 
     .add-btn {
-      width: 100%; padding: 14px; border-radius: 10px; border: none;
-      background: #a78bfa; color: #fff; font-size: 16px;
+      width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333;
+      background: #111; color: #aaa; font-size: 16px;
       cursor: pointer; margin-bottom: 20px;
     }
 
     .card {
-      background: #2d2d44; border-radius: 10px; padding: 16px;
-      margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+      background: #111; border-radius: 10px; padding: 16px;
+      margin-bottom: 12px; display: flex; justify-content: space-between;
+      align-items: center; border: 1px solid #222;
     }
-    .card-info h3 { font-size: 16px; margin-bottom: 4px; }
-    .card-info p { font-size: 13px; color: #aaa; }
+    .card-info h3 { font-size: 16px; margin-bottom: 4px; color: #ccc; }
+    .card-info p { font-size: 13px; color: #666; }
     .card-actions { display: flex; gap: 8px; }
     .card-actions button {
       padding: 6px 12px; border-radius: 8px; border: none;
       cursor: pointer; font-size: 13px;
     }
-    .btn-show { background: #3b82f6; color: #fff; }
-    .btn-edit { background: #f59e0b; color: #fff; }
-    .btn-del { background: #ef4444; color: #fff; }
+    .btn-show { background: #1a3a5c; color: #aaa; }
+    .btn-edit { background: #3a2a00; color: #aaa; }
+    .btn-del { background: #3a0000; color: #aaa; }
 
-    /* 모달 */
     .modal {
       display: none; position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+      width: 100%; height: 100%; background: rgba(0,0,0,0.9);
       justify-content: center; align-items: center;
     }
     .modal.show { display: flex; }
     .modal-box {
-      background: #2d2d44; border-radius: 14px; padding: 24px;
+      background: #111; border-radius: 14px; padding: 24px;
       width: 320px; display: flex; flex-direction: column; gap: 12px;
+      border: 1px solid #222;
     }
-    .modal-box h3 { color: #a78bfa; margin-bottom: 4px; }
+    .modal-box h3 { color: #888; margin-bottom: 4px; }
     .modal-box input, .modal-box select {
-      padding: 10px; border-radius: 8px; border: none;
-      background: #1a1a2e; color: #eee; font-size: 14px; width: 100%;
+      padding: 10px; border-radius: 8px; border: 1px solid #333;
+      background: #000; color: #ccc; font-size: 14px; width: 100%;
     }
     .modal-box button {
       padding: 10px; border-radius: 8px; border: none;
-      cursor: pointer; font-size: 14px; color: #fff;
+      cursor: pointer; font-size: 14px; color: #aaa;
     }
-    .btn-save { background: #a78bfa; }
-    .btn-cancel { background: #444; }
+    .btn-save { background: #222; }
+    .btn-cancel { background: #1a1a1a; }
   </style>
 </head>
 <body>
