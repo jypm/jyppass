@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#000000">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
-  <link rel="icon" href="favicon.png" type="image/png" sizes="128x128">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
   <title>JYP 비밀번호 관리</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -72,14 +72,18 @@
       background: #111; border-radius: 10px; padding: 16px;
       margin-bottom: 12px; display: flex; justify-content: space-between;
       align-items: center; border: 1px solid #222;
-      cursor: grab; transition: opacity 0.2s;
+      transition: opacity 0.2s;
     }
-    .card.dragging { opacity: 0.4; cursor: grabbing; }
+    .card.dragging { opacity: 0.4; }
     .card.drag-over { border-color: #555; }
     .card-info h3 { font-size: 16px; margin-bottom: 4px; color: #ccc; }
     .card-info p { font-size: 13px; color: #666; }
     .card-left { display: flex; align-items: center; gap: 12px; }
-    .drag-handle { color: #444; font-size: 18px; cursor: grab; }
+    .drag-handle {
+      color: #555; font-size: 20px; cursor: grab; padding: 4px 6px;
+      touch-action: none;
+    }
+    .drag-handle.active { color: #aaa; }
     .card-actions { display: flex; gap: 8px; }
     .card-actions button {
       padding: 6px 12px; border-radius: 8px; border: none;
@@ -198,7 +202,6 @@
   let currentUser = null;
   let editingId = null;
   let timerInterval = null;
-  let dragSrcEl = null;
   let realId = '';
   let realPw = '';
   const TIMEOUT = 5 * 60;
@@ -310,7 +313,6 @@
       const card = document.createElement('div');
       card.className = 'card';
       card.setAttribute('data-id', data.id);
-      card.draggable = true;
       card.innerHTML = `
         <div class="card-left">
           <span class="drag-handle">⠿</span>
@@ -326,49 +328,76 @@
         </div>
       `;
 
+      // 드래그 핸들에서만 드래그 시작 (PC)
+      const handle = card.querySelector('.drag-handle');
+      handle.addEventListener('mousedown', () => { card.draggable = true; });
+      document.addEventListener('mouseup', () => { card.draggable = false; });
+
       card.addEventListener('dragstart', e => {
-        dragSrcEl = card;
+        if (!card.draggable) { e.preventDefault(); return; }
         card.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
       });
       card.addEventListener('dragend', () => {
         card.classList.remove('dragging');
+        card.draggable = false;
         document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over'));
         saveOrder();
       });
       card.addEventListener('dragover', e => {
         e.preventDefault();
-        if (card !== dragSrcEl) card.classList.add('drag-over');
+        if (!card.classList.contains('dragging')) card.classList.add('drag-over');
       });
       card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
       card.addEventListener('drop', e => {
         e.preventDefault();
-        if (dragSrcEl !== card) {
+        const dragging = document.querySelector('.card.dragging');
+        if (dragging && dragging !== card) {
           const allCards = [...listEl.querySelectorAll('.card')];
-          const srcIdx = allCards.indexOf(dragSrcEl);
+          const srcIdx = allCards.indexOf(dragging);
           const dstIdx = allCards.indexOf(card);
-          if (srcIdx < dstIdx) listEl.insertBefore(dragSrcEl, card.nextSibling);
-          else listEl.insertBefore(dragSrcEl, card);
+          if (srcIdx < dstIdx) listEl.insertBefore(dragging, card.nextSibling);
+          else listEl.insertBefore(dragging, card);
         }
       });
 
-      card.addEventListener('touchstart', e => {
-        dragSrcEl = card;
+      // 터치 드래그 - 핸들에서만
+      let touchTimer = null;
+      let isDragging = false;
+      let dragEl = null;
+
+      handle.addEventListener('touchstart', e => {
+        touchTimer = setTimeout(() => {
+          isDragging = true;
+          dragEl = card;
+          handle.classList.add('active');
+        }, 300);
       }, { passive: true });
-      card.addEventListener('touchmove', e => {
+
+      handle.addEventListener('touchmove', e => {
+        if (!isDragging) { clearTimeout(touchTimer); return; }
         e.preventDefault();
         const touch = e.touches[0];
         const target = document.elementFromPoint(touch.clientX, touch.clientY);
         const targetCard = target?.closest('.card');
-        if (targetCard && targetCard !== dragSrcEl) {
+        if (targetCard && targetCard !== dragEl) {
           const allCards = [...listEl.querySelectorAll('.card')];
-          const srcIdx = allCards.indexOf(dragSrcEl);
+          const srcIdx = allCards.indexOf(dragEl);
           const dstIdx = allCards.indexOf(targetCard);
-          if (srcIdx < dstIdx) listEl.insertBefore(dragSrcEl, targetCard.nextSibling);
-          else listEl.insertBefore(dragSrcEl, targetCard);
+          if (srcIdx < dstIdx) listEl.insertBefore(dragEl, targetCard.nextSibling);
+          else listEl.insertBefore(dragEl, targetCard);
         }
       }, { passive: false });
-      card.addEventListener('touchend', () => saveOrder());
+
+      handle.addEventListener('touchend', () => {
+        clearTimeout(touchTimer);
+        if (isDragging) {
+          isDragging = false;
+          dragEl = null;
+          handle.classList.remove('active');
+          saveOrder();
+        }
+      });
 
       listEl.appendChild(card);
     });
