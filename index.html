@@ -341,7 +341,7 @@
   pwWrap.addEventListener('touchend', hidePw);
   pwWrap.addEventListener('touchcancel', hidePw);
 
-  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('contextmenu', e => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return; e.preventDefault(); });
 
   // 엔터키 로그인
   document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('pin-input').focus(); });
