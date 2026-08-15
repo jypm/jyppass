@@ -616,7 +616,8 @@
         </div>
       `;
       item.addEventListener('click', () => {
-        closeIdListModal();
+        document.getElementById('id-list-modal').classList.remove('show');
+        window.viewFromIdList = true;
         viewEntry(data.docId, data.service||'', data.id||'', data.pw||'', data.memo||'');
       });
       listEl.appendChild(item);
@@ -687,7 +688,7 @@
     document.getElementById('v-memo').textContent = memo || '-';
     document.getElementById('view-modal').classList.add('show');
   }
-  window.closeViewModal = function() { document.getElementById('view-modal').classList.remove('show'); }
+  window.closeViewModal = function() { document.getElementById('view-modal').classList.remove('show'); if (window.viewFromIdList) { document.getElementById('id-list-modal').classList.add('show'); window.viewFromIdList = false; } }
 </script>
 </body>
 </html>
