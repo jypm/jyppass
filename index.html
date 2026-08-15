@@ -52,7 +52,7 @@
     .service-card { background: #111; border-radius: 10px; padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; cursor: pointer; transition: opacity 0.2s; }
     .service-card:active { opacity: 0.7; }
     .service-left { display: flex; flex-direction: column; gap: 4px; }
-    .service-name { font-size: 18px; color: #eee; font-weight: 500; }
+    .service-name { font-size: 20px; color: #eee; font-weight: 500; }
     .service-date { font-size: 11px; color: #3a3a3a; }
     .service-right { display: flex; align-items: center; gap: 8px; }
     .service-badge { font-size: 11px; color: #55fa9f; background: #1a1a1a; padding: 3px 8px; border-radius: 10px; }
@@ -226,6 +226,7 @@
     <div id="invite-code-box" style="display:none;">
       <div class="code-box" id="invite-code-text"></div>
       <p style="font-size:11px;color:#555;text-align:center;">1회용 코드 · 사용 후 만료</p>
+      <button class="popup-ok" style="background:#1a2a1a;color:#55fa9f;" onclick="copyInviteLink()">🔗 링크+코드 복사</button>
     </div>
 
     <button class="popup-ok" style="margin-top:8px;" onclick="closeAdminModal()">닫기</button>
@@ -504,6 +505,16 @@
   }
 
   // 초대코드 생성
+  window.copyInviteLink = function() {
+    const code = document.getElementById('invite-code-text').textContent;
+    const text = `JYP 비밀번호 관리 초대 🔐
+https://jypm.github.io/jyppass/
+초대코드: ${code}`;
+    navigator.clipboard.writeText(text).then(() => {
+      showAlert('클립보드에 복사됐어요!', '✅');
+    });
+  }
+
   window.generateInviteCode = async function() {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
     await addDoc(collection(db, 'inviteCodes'), { code, used: false, createdAt: Date.now() });
