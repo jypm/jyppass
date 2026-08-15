@@ -38,9 +38,10 @@
     #main-screen { display: none; padding: 20px; max-width: 700px; margin: 0 auto; overflow-y: auto; height: 100vh; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .header h2 { color: #aaa; }
-    .header-right { display: flex; align-items: center; gap: 12px; }
-    #timer { font-size: 12px; color: #555; }
-    .header button { padding: 8px 16px; border-radius: 8px; border: 1px solid #333; background: #111; color: #888; cursor: pointer; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    #timer { font-size: 12px; color: #555; margin-right: 4px; }
+    .header button { padding: 8px 14px; border-radius: 8px; border: 1px solid #333; background: #111; color: #888; cursor: pointer; font-size: 13px; }
+    .btn-exit { border-color: #2a0000 !important; color: #666 !important; }
 
     .search-box {
       width: 100%; padding: 10px 16px; border-radius: 10px; border: 1px solid #333;
@@ -80,7 +81,6 @@
     .masked { font-size: 16px; margin-bottom: 4px; cursor: pointer; padding: 8px; border-radius: 8px; background: #0a0a0a; border: 1px solid #222; color: #aaa; user-select: none; -webkit-user-select: none; }
     .masked .hint { font-size: 11px; color: #444; margin-top: 4px; }
 
-    /* 커스텀 팝업 공통 */
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); justify-content: center; align-items: center; z-index: 200; }
     .overlay.show { display: flex; }
     .popup-box { background: #111; border-radius: 16px; padding: 28px 24px; width: 280px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
@@ -92,9 +92,6 @@
     .popup-yes-red { background: #3a0000; color: #ff6b6b; }
     .popup-yes { background: #222; color: #ccc; }
     .popup-no { background: #1a1a1a; color: #888; }
-
-    #confirm-modal { border: 1px solid #2a0000; }
-    #exit-modal { border: 1px solid #333; }
   </style>
 </head>
 <body>
@@ -118,6 +115,7 @@
     <div class="header-right">
       <span id="timer"></span>
       <button onclick="doLogout()">로그아웃</button>
+      <button class="btn-exit" onclick="openExitModal()">종료</button>
     </div>
   </div>
   <input type="text" class="search-box" id="search-input" placeholder="🔍 검색">
@@ -211,47 +209,38 @@
   let allDocs = [];
   const TIMEOUT = 5 * 60;
 
-  // 뒤로가기 2번 → 종료 팝업
-  let backCount = 0;
-  let backTimer = null;
-
-  history.pushState(null, null, location.href);
+  // 뒤로가기 완전 차단
+  history.pushState(null, '', location.href);
+  history.pushState(null, '', location.href);
+  history.pushState(null, '', location.href);
   window.addEventListener('popstate', () => {
-    history.pushState(null, null, location.href);
-
+    // 모달 열려있으면 닫기
     if (document.getElementById('exit-modal').classList.contains('show')) {
-      closeExitModal(); return;
+      closeExitModal(); history.go(1); return;
     }
     if (document.getElementById('view-modal').classList.contains('show')) {
-      closeViewModal(); return;
+      closeViewModal(); history.go(1); return;
     }
     if (document.getElementById('modal').classList.contains('show')) {
-      closeModal(); return;
+      closeModal(); history.go(1); return;
     }
     if (document.getElementById('confirm-modal').classList.contains('show')) {
-      closeConfirm(); return;
+      closeConfirm(); history.go(1); return;
     }
-
-    backCount++;
-    clearTimeout(backTimer);
-    backTimer = setTimeout(() => { backCount = 0; }, 2000);
-
-    if (backCount >= 2) {
-      backCount = 0;
-      document.getElementById('exit-modal').classList.add('show');
-    }
+    history.go(1);
   });
 
+  window.openExitModal = function() {
+    document.getElementById('exit-modal').classList.add('show');
+  }
   window.closeExitModal = function() {
     document.getElementById('exit-modal').classList.remove('show');
   }
-
   window.exitApp = function() {
     window.close();
     if (navigator.app) navigator.app.exitApp();
   }
 
-  // 마스킹
   function mask(str) {
     if (!str) return '';
     if (str.length <= 3) return str[0] + '*'.repeat(str.length - 1);
@@ -318,6 +307,8 @@
     document.getElementById('main-screen').style.display = 'block';
     document.getElementById('welcome-text').textContent = name + '님';
     document.getElementById('pin-input').value = '';
+    // 로그인 후 히스토리 쌓기
+    for (let i = 0; i < 5; i++) history.pushState(null, '', location.href);
     startTimer();
     loadList();
   }
