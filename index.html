@@ -154,6 +154,7 @@
     <div class="header-right">
       <span id="timer"></span>
       <button id="admin-btn" class="btn-admin" style="display:none" onclick="openAdminModal()">관리</button>
+      <button id="changepw-btn" style="display:none;border-color:#333;color:#888;" onclick="openChangePwModal()">🔑</button>
       <button onclick="openExitModal()">로그아웃</button>
     </div>
   </div>
@@ -257,7 +258,7 @@
       <p style="font-size:11px;color:#555;text-align:center;">1회용 코드 · 사용 후 만료</p>
       <button class="popup-ok" style="background:#1a2a1a;color:#55fa9f;" onclick="copyInviteLink()">🔗 링크+코드 복사</button>
     </div>
-    <button class="popup-ok" style="background:#222;color:#888;margin-top:4px;" onclick="openChangePwModal()">🔑 내 비밀번호 변경</button>
+    <button class="popup-ok" style="background:#222;color:#888;margin-top:4px;" onclick="closeAdminModal();setTimeout(openChangePwModal,200)">🔑 내 비밀번호 변경</button>
     <button class="popup-ok" style="margin-top:4px;" onclick="closeAdminModal()">닫기</button>
   </div>
 </div>
@@ -432,8 +433,13 @@
     document.getElementById('main-screen').style.display = 'block';
     document.getElementById('welcome-text').textContent = name + '님';
     document.getElementById('pin-input').value = '';
-    if (user.isAdmin) document.getElementById('admin-btn').style.display = '';
-    else document.getElementById('admin-btn').style.display = 'none';
+    if (user.isAdmin) {
+      document.getElementById('admin-btn').style.display = '';
+      document.getElementById('changepw-btn').style.display = 'none';
+    } else {
+      document.getElementById('admin-btn').style.display = 'none';
+      document.getElementById('changepw-btn').style.display = '';
+    }
     for (let i = 0; i < 5; i++) history.pushState(null, '', location.href);
     startTimer();
     loadList();
