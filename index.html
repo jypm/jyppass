@@ -230,6 +230,10 @@
   window.closeExitModal = function() {
     document.getElementById('exit-modal').classList.remove('show');
   }
+  window.exitApp = function() {
+    window.location.href = 'about:blank';
+    setTimeout(() => window.close(), 100);
+  }
 
 
 
