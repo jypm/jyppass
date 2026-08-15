@@ -417,6 +417,7 @@
     document.getElementById('id-list-title').textContent = serviceName;
     const listEl = document.getElementById('id-list-items');
     listEl.innerHTML = '';
+    items.sort((a, b) => (a.id||'').localeCompare(b.id||''));
     items.forEach(data => {
       const item = document.createElement('div');
       item.className = 'id-list-item';
