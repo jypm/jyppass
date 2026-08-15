@@ -43,21 +43,11 @@
     .header button { padding: 8px 14px; border-radius: 8px; border: 1px solid #333; background: #111; color: #888; cursor: pointer; font-size: 13px; }
     .btn-exit { border-color: #2a0000 !important; color: #666 !important; }
 
-    .search-box {
-      width: 100%; padding: 10px 16px; border-radius: 10px; border: 1px solid #333;
-      background: #111; color: #ccc; font-size: 15px; margin-bottom: 14px;
-      user-select: text; -webkit-user-select: text;
-    }
+    .search-box { width: 100%; padding: 10px 16px; border-radius: 10px; border: 1px solid #333; background: #111; color: #ccc; font-size: 15px; margin-bottom: 14px; user-select: text; -webkit-user-select: text; }
     .search-box::placeholder { color: #444; }
-
     .add-btn { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333; background: #111; color: #aaa; font-size: 16px; cursor: pointer; margin-bottom: 16px; }
 
-    .card {
-      background: #111; border-radius: 10px; padding: 14px 12px;
-      margin-bottom: 10px; display: flex; justify-content: space-between;
-      align-items: center; border: 1px solid #222;
-      transition: opacity 0.2s; cursor: pointer;
-    }
+    .card { background: #111; border-radius: 10px; padding: 14px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; transition: opacity 0.2s; cursor: pointer; }
     .card:active { opacity: 0.7; }
     .card-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
     .card-info { flex: 1; min-width: 0; }
@@ -123,7 +113,6 @@
   <div id="list"></div>
 </div>
 
-<!-- 추가/수정 모달 -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <h3 id="modal-title">계정 추가</h3>
@@ -140,7 +129,6 @@
   </div>
 </div>
 
-<!-- 보기 모달 -->
 <div class="modal" id="view-modal">
   <div class="modal-box">
     <h3 id="v-service"></h3>
@@ -160,7 +148,6 @@
   </div>
 </div>
 
-<!-- 삭제 확인 팝업 -->
 <div class="overlay" id="confirm-modal">
   <div class="popup-box" style="border:1px solid #2a0000;">
     <div class="popup-icon">🗑️</div>
@@ -172,7 +159,6 @@
   </div>
 </div>
 
-<!-- 앱 종료 확인 팝업 -->
 <div class="overlay" id="exit-modal">
   <div class="popup-box" style="border:1px solid #333;">
     <div class="popup-icon">👋</div>
@@ -209,26 +195,33 @@
   let allDocs = [];
   const TIMEOUT = 5 * 60;
 
-  // 뒤로가기 완전 차단
+  // 뒤로가기 처리
+  let blocking = false;
   history.pushState(null, '', location.href);
   history.pushState(null, '', location.href);
   history.pushState(null, '', location.href);
+
   window.addEventListener('popstate', () => {
-    // 모달 열려있으면 닫기
+    if (blocking) return;
+    blocking = true;
+    history.go(1);
+    setTimeout(() => { blocking = false; }, 100);
+
+    // 열린 모달 순서대로 닫기
     if (document.getElementById('exit-modal').classList.contains('show')) {
-      closeExitModal(); history.go(1); return;
+      closeExitModal(); return;
     }
     if (document.getElementById('view-modal').classList.contains('show')) {
-      closeViewModal(); history.go(1); return;
+      closeViewModal(); return;
     }
     if (document.getElementById('modal').classList.contains('show')) {
-      closeModal(); history.go(1); return;
+      closeModal(); return;
     }
     if (document.getElementById('confirm-modal').classList.contains('show')) {
-      closeConfirm(); history.go(1); return;
+      closeConfirm(); return;
     }
-    history.go(1);
-    setTimeout(() => openExitModal(), 50);
+    // 아무 모달도 없으면 종료 팝업
+    setTimeout(() => openExitModal(), 100);
   });
 
   window.openExitModal = function() {
@@ -308,7 +301,6 @@
     document.getElementById('main-screen').style.display = 'block';
     document.getElementById('welcome-text').textContent = name + '님';
     document.getElementById('pin-input').value = '';
-    // 로그인 후 히스토리 쌓기
     for (let i = 0; i < 5; i++) history.pushState(null, '', location.href);
     startTimer();
     loadList();
