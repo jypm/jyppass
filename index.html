@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JYP 비밀번호 관리</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #1a1a2e; color: #eee; font-family: 'Segoe UI', sans-serif; }
+
+    #login-screen {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; height: 100vh; gap: 20px;
+    }
+    #login-screen h1 { font-size: 24px; color: #a78bfa; }
+    #login-screen input {
+      padding: 12px 20px; border-radius: 10px; border: none;
+      background: #2d2d44; color: #eee; font-size: 18px;
+      text-align: center; letter-spacing: 8px; width: 200px;
+    }
+    #login-screen button {
+      padding: 12px 40px; border-radius: 10px; border: none;
+      background: #a78bfa; color: #fff; font-size: 16px; cursor: pointer;
+    }
+    #login-screen select {
+      padding: 10px; border-radius: 10px; border: none;
+      background: #2d2d44; color: #eee; font-size: 14px; width: 200px;
+    }
+
+    #main-screen { display: none; padding: 20px; }
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    .header h2 { color: #a78bfa; }
+    .header button {
+      padding: 8px 16px; border-radius: 8px; border: none;
+      background: #444; color: #eee; cursor: pointer;
+    }
+
+    .add-btn {
+      width: 100%; padding: 14px; border-radius: 10px; border: none;
+      background: #a78bfa; color: #fff; font-size: 16px;
+      cursor: pointer; margin-bottom: 20px;
+    }
+
+    .card {
+      background: #2d2d44; border-radius: 10px; padding: 16px;
+      margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .card-info h3 { font-size: 16px; margin-bottom: 4px; }
+    .card-info p { font-size: 13px; color: #aaa; }
+    .card-actions { display: flex; gap: 8px; }
+    .card-actions button {
+      padding: 6px 12px; border-radius: 8px; border: none;
+      cursor: pointer; font-size: 13px;
+    }
+    .btn-show { background: #3b82f6; color: #fff; }
+    .btn-edit { background: #f59e0b; color: #fff; }
+    .btn-del { background: #ef4444; color: #fff; }
+
+    /* 모달 */
+    .modal {
+      display: none; position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+      justify-content: center; align-items: center;
+    }
+    .modal.show { display: flex; }
+    .modal-box {
+      background: #2d2d44; border-radius: 14px; padding: 24px;
+      width: 320px; display: flex; flex-direction: column; gap: 12px;
+    }
+    .modal-box h3 { color: #a78bfa; margin-bottom: 4px; }
+    .modal-box input, .modal-box select {
+      padding: 10px; border-radius: 8px; border: none;
+      background: #1a1a2e; color: #eee; font-size: 14px; width: 100%;
+    }
+    .modal-box button {
+      padding: 10px; border-radius: 8px; border: none;
+      cursor: pointer; font-size: 14px; color: #fff;
+    }
+    .btn-save { background: #a78bfa; }
+    .btn-cancel { background: #444; }
+  </style>
+</head>
+<body>
+
+<!-- 로그인 화면 -->
+<div id="login-screen">
+  <h1>🔐 비밀번호 관리</h1>
+  <select id="user-select">
+    <option value="">사용자 선택</option>
+  </select>
+  <input type="password" id="pin-input" placeholder="PIN" maxlength="4">
+  <button onclick="doLogin()">로그인</button>
+</div>
+
+<!-- 메인 화면 -->
+<div id="main-screen">
+  <div class="header">
+    <h2 id="welcome-text"></h2>
+    <button onclick="doLogout()">로그아웃</button>
+  </div>
+  <button class="add-btn" onclick="openAddModal()">+ 계정 추가</button>
+  <div id="list"></div>
+</div>
+
+<!-- 추가/수정 모달 -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3 id="modal-title">계정 추가</h3>
+    <input type="text" id="m-service" placeholder="서비스명 (예: 네이버)">
+    <input type="text" id="m-id" placeholder="아이디">
+    <input type="text" id="m-pw" placeholder="비밀번호">
+    <input type="text" id="m-memo" placeholder="메모 (선택)">
+    <button class="btn-save" onclick="saveEntry()">저장</button>
+    <button class="btn-cancel" onclick="closeModal()">취소</button>
+  </div>
+</div>
+
+<!-- 비밀번호 보기 모달 -->
+<div class="modal" id="view-modal">
+  <div class="modal-box">
+    <h3 id="v-service"></h3>
+    <p style="color:#aaa">아이디</p>
+    <p id="v-id" style="font-size:16px;margin-bottom:8px"></p>
+    <p style="color:#aaa">비밀번호</p>
+    <p id="v-pw" style="font-size:16px;margin-bottom:8px"></p>
+    <p style="color:#aaa">메모</p>
+    <p id="v-memo" style="font-size:14px;margin-bottom:12px"></p>
+    <button class="btn-cancel" onclick="closeViewModal()">닫기</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+  import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDWu9mmACrAqv3P-VW54DogZ61ZzraW5Yg",
+    authDomain: "jyppass.firebaseapp.com",
+    projectId: "jyppass",
+    storageBucket: "jyppass.firebasestorage.app",
+    messagingSenderId: "270444457037",
+    appId: "1:270444457037:web:93a53b15668c2784188004"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let currentUser = null;
+  let editingId = null;
+
+  // 사용자 목록 로드
+  async function loadUsers() {
+    const snap = await getDocs(collection(db, 'users'));
+    const sel = document.getElementById('user-select');
+    snap.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.id;
+      opt.textContent = d.data().name;
+      sel.appendChild(opt);
+    });
+  }
+
+  // 로그인
+  window.doLogin = async function() {
+    const uid = document.getElementById('user-select').value;
+    const pin = document.getElementById('pin-input').value;
+    if (!uid || !pin) return alert('사용자와 PIN을 입력하세요');
+
+    const snap = await getDocs(query(collection(db, 'users'), where('__name__', '==', uid)));
+    if (snap.empty) return alert('사용자 없음');
+
+    const user = snap.docs[0].data();
+    if (user.pin !== pin) return alert('PIN 오류');
+
+    currentUser = { id: uid, ...user };
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-screen').style.display = 'block';
+    document.getElementById('welcome-text').textContent = user.name + '님';
+    loadList();
+  }
+
+  // 로그아웃
+  window.doLogout = function() {
+    currentUser = null;
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('main-screen').style.display = 'none';
+    document.getElementById('pin-input').value = '';
+  }
+
+  // 목록 로드
+  async function loadList() {
+    const listEl = document.getElementById('list');
+    listEl.innerHTML = '';
+    const q = query(collection(db, 'passwords'), where('uid', '==', currentUser.id));
+    const snap = await getDocs(q);
+    snap.forEach(d => {
+      const data = d.data();
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-info">
+          <h3>${data.service}</h3>
+          <p>${data.id}</p>
+        </div>
+        <div class="card-actions">
+          <button class="btn-show" onclick="viewEntry('${d.id}','${data.service}','${data.id}','${data.pw}','${data.memo||''}')">보기</button>
+          <button class="btn-edit" onclick="openEditModal('${d.id}','${data.service}','${data.id}','${data.pw}','${data.memo||''}')">수정</button>
+          <button class="btn-del" onclick="delEntry('${d.id}')">삭제</button>
+        </div>
+      `;
+      listEl.appendChild(card);
+    });
+  }
+
+  // 추가 모달
+  window.openAddModal = function() {
+    editingId = null;
+    document.getElementById('modal-title').textContent = '계정 추가';
+    document.getElementById('m-service').value = '';
+    document.getElementById('m-id').value = '';
+    document.getElementById('m-pw').value = '';
+    document.getElementById('m-memo').value = '';
+    document.getElementById('modal').classList.add('show');
+  }
+
+  // 수정 모달
+  window.openEditModal = function(id, service, uid, pw, memo) {
+    editingId = id;
+    document.getElementById('modal-title').textContent = '계정 수정';
+    document.getElementById('m-service').value = service;
+    document.getElementById('m-id').value = uid;
+    document.getElementById('m-pw').value = pw;
+    document.getElementById('m-memo').value = memo;
+    document.getElementById('modal').classList.add('show');
+  }
+
+  window.closeModal = function() {
+    document.getElementById('modal').classList.remove('show');
+  }
+
+  // 저장
+  window.saveEntry = async function() {
+    const service = document.getElementById('m-service').value.trim();
+    const id = document.getElementById('m-id').value.trim();
+    const pw = document.getElementById('m-pw').value.trim();
+    const memo = document.getElementById('m-memo').value.trim();
+    if (!service || !id || !pw) return alert('서비스명, 아이디, 비밀번호는 필수입니다');
+
+    if (editingId) {
+      await updateDoc(doc(db, 'passwords', editingId), { service, id, pw, memo });
+    } else {
+      await addDoc(collection(db, 'passwords'), { uid: currentUser.id, service, id, pw, memo });
+    }
+    closeModal();
+    loadList();
+  }
+
+  // 삭제
+  window.delEntry = async function(id) {
+    if (!confirm('삭제할까요?')) return;
+    await deleteDoc(doc(db, 'passwords', id));
+    loadList();
+  }
+
+  // 보기
+  window.viewEntry = function(id, service, uid, pw, memo) {
+    document.getElementById('v-service').textContent = service;
+    document.getElementById('v-id').textContent = uid;
+    document.getElementById('v-pw').textContent = pw;
+    document.getElementById('v-memo').textContent = memo || '-';
+    document.getElementById('view-modal').classList.add('show');
+  }
+
+  window.closeViewModal = function() {
+    document.getElementById('view-modal').classList.remove('show');
+  }
+
+  loadUsers();
+</script>
+</body>
+</html>
