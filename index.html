@@ -10,29 +10,32 @@
 
     #login-screen {
       display: flex; flex-direction: column; align-items: center;
-      justify-content: center; height: 100vh; gap: 20px;
+      justify-content: center; height: 100vh; gap: 16px;
     }
-    #login-screen h1 { font-size: 24px; color: #888; }
+    #login-screen h1 { font-size: 22px; color: #888; margin-bottom: 8px; }
     #login-screen input {
-      padding: 12px 20px; border-radius: 10px; border: 1px solid #333;
-      background: #111; color: #ccc; font-size: 18px;
-      text-align: center; letter-spacing: 8px; width: 200px;
+      padding: 12px 16px; border-radius: 10px; border: 1px solid #333;
+      background: #111; color: #ccc; font-size: 16px; width: 240px;
     }
+    #login-screen input[type="password"] { letter-spacing: 6px; }
+    .save-row {
+      display: flex; align-items: center; gap: 8px;
+      color: #666; font-size: 13px; width: 240px;
+    }
+    .save-row input { width: auto; }
     #login-screen button {
-      padding: 12px 40px; border-radius: 10px; border: none;
-      background: #222; color: #aaa; font-size: 16px; cursor: pointer;
-    }
-    #login-screen select {
-      padding: 10px; border-radius: 10px; border: 1px solid #333;
-      background: #111; color: #ccc; font-size: 14px; width: 200px;
+      padding: 12px 40px; border-radius: 10px; border: 1px solid #333;
+      background: #111; color: #aaa; font-size: 16px; cursor: pointer; width: 240px;
     }
 
-    #main-screen { display: none; padding: 20px; }
+    #main-screen { display: none; padding: 20px; max-width: 700px; margin: 0 auto; }
     .header {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 20px;
     }
     .header h2 { color: #aaa; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    #timer { font-size: 12px; color: #555; }
     .header button {
       padding: 8px 16px; border-radius: 8px; border: 1px solid #333;
       background: #111; color: #888; cursor: pointer;
@@ -72,7 +75,7 @@
       border: 1px solid #222;
     }
     .modal-box h3 { color: #888; margin-bottom: 4px; }
-    .modal-box input, .modal-box select {
+    .modal-box input {
       padding: 10px; border-radius: 8px; border: 1px solid #333;
       background: #000; color: #ccc; font-size: 14px; width: 100%;
     }
@@ -89,10 +92,12 @@
 <!-- 로그인 화면 -->
 <div id="login-screen">
   <h1>🔐 비밀번호 관리</h1>
-  <select id="user-select">
-    <option value="">사용자 선택</option>
-  </select>
-  <input type="password" id="pin-input" placeholder="PIN" maxlength="4">
+  <input type="text" id="name-input" placeholder="이름 입력">
+  <input type="password" id="pin-input" placeholder="PIN">
+  <div class="save-row">
+    <input type="checkbox" id="save-id">
+    <label for="save-id">아이디 저장</label>
+  </div>
   <button onclick="doLogin()">로그인</button>
 </div>
 
@@ -100,7 +105,10 @@
 <div id="main-screen">
   <div class="header">
     <h2 id="welcome-text"></h2>
-    <button onclick="doLogout()">로그아웃</button>
+    <div class="header-right">
+      <span id="timer"></span>
+      <button onclick="doLogout()">로그아웃</button>
+    </div>
   </div>
   <button class="add-btn" onclick="openAddModal()">+ 계정 추가</button>
   <div id="list"></div>
@@ -119,15 +127,15 @@
   </div>
 </div>
 
-<!-- 비밀번호 보기 모달 -->
+<!-- 보기 모달 -->
 <div class="modal" id="view-modal">
   <div class="modal-box">
     <h3 id="v-service"></h3>
-    <p style="color:#aaa">아이디</p>
+    <p style="color:#666;font-size:12px">아이디</p>
     <p id="v-id" style="font-size:16px;margin-bottom:8px"></p>
-    <p style="color:#aaa">비밀번호</p>
+    <p style="color:#666;font-size:12px">비밀번호</p>
     <p id="v-pw" style="font-size:16px;margin-bottom:8px"></p>
-    <p style="color:#aaa">메모</p>
+    <p style="color:#666;font-size:12px">메모</p>
     <p id="v-memo" style="font-size:14px;margin-bottom:12px"></p>
     <button class="btn-cancel" onclick="closeViewModal()">닫기</button>
   </div>
@@ -151,41 +159,75 @@
 
   let currentUser = null;
   let editingId = null;
+  let timerInterval = null;
+  const TIMEOUT = 5 * 60;
 
-  // 사용자 목록 로드
-  async function loadUsers() {
-    const snap = await getDocs(collection(db, 'users'));
-    const sel = document.getElementById('user-select');
-    snap.forEach(d => {
-      const opt = document.createElement('option');
-      opt.value = d.id;
-      opt.textContent = d.data().name;
-      sel.appendChild(opt);
-    });
+  // 아이디 저장 불러오기
+  const savedName = localStorage.getItem('savedName');
+  if (savedName) {
+    document.getElementById('name-input').value = savedName;
+    document.getElementById('save-id').checked = true;
   }
+
+  // 타이머 시작
+  function startTimer() {
+    let remaining = TIMEOUT;
+    clearInterval(timerInterval);
+
+    timerInterval = setInterval(() => {
+      remaining--;
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+        doLogout();
+      }
+    }, 1000);
+  }
+
+  // 동작 감지시 타이머 리셋
+  function resetTimer() {
+    if (!currentUser) return;
+    startTimer();
+  }
+
+  ['click','keydown','mousemove','touchstart'].forEach(e => {
+    document.addEventListener(e, resetTimer);
+  });
 
   // 로그인
   window.doLogin = async function() {
-    const uid = document.getElementById('user-select').value;
-    const pin = document.getElementById('pin-input').value;
-    if (!uid || !pin) return alert('사용자와 PIN을 입력하세요');
+    const name = document.getElementById('name-input').value.trim();
+    const pin = document.getElementById('pin-input').value.trim();
+    const saveId = document.getElementById('save-id').checked;
 
-    const snap = await getDocs(query(collection(db, 'users'), where('__name__', '==', uid)));
+    if (!name || !pin) return alert('이름과 PIN을 입력하세요');
+
+    const snap = await getDocs(query(collection(db, 'users'), where('name', '==', name)));
     if (snap.empty) return alert('사용자 없음');
 
-    const user = snap.docs[0].data();
+    const userDoc = snap.docs[0];
+    const user = userDoc.data();
     if (user.pin !== pin) return alert('PIN 오류');
 
-    currentUser = { id: uid, ...user };
+    if (saveId) localStorage.setItem('savedName', name);
+    else localStorage.removeItem('savedName');
+
+    currentUser = { id: userDoc.id, ...user };
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-screen').style.display = 'block';
-    document.getElementById('welcome-text').textContent = user.name + '님';
+    document.getElementById('welcome-text').textContent = name + '님';
+    document.getElementById('pin-input').value = '';
+    startTimer();
     loadList();
   }
 
   // 로그아웃
   window.doLogout = function() {
     currentUser = null;
+    clearInterval(timerInterval);
+    document.getElementById('timer').textContent = '';
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('main-screen').style.display = 'none';
     document.getElementById('pin-input').value = '';
@@ -216,7 +258,6 @@
     });
   }
 
-  // 추가 모달
   window.openAddModal = function() {
     editingId = null;
     document.getElementById('modal-title').textContent = '계정 추가';
@@ -227,7 +268,6 @@
     document.getElementById('modal').classList.add('show');
   }
 
-  // 수정 모달
   window.openEditModal = function(id, service, uid, pw, memo) {
     editingId = id;
     document.getElementById('modal-title').textContent = '계정 수정';
@@ -242,7 +282,6 @@
     document.getElementById('modal').classList.remove('show');
   }
 
-  // 저장
   window.saveEntry = async function() {
     const service = document.getElementById('m-service').value.trim();
     const id = document.getElementById('m-id').value.trim();
@@ -259,14 +298,12 @@
     loadList();
   }
 
-  // 삭제
   window.delEntry = async function(id) {
     if (!confirm('삭제할까요?')) return;
     await deleteDoc(doc(db, 'passwords', id));
     loadList();
   }
 
-  // 보기
   window.viewEntry = function(id, service, uid, pw, memo) {
     document.getElementById('v-service').textContent = service;
     document.getElementById('v-id').textContent = uid;
@@ -278,8 +315,6 @@
   window.closeViewModal = function() {
     document.getElementById('view-modal').classList.remove('show');
   }
-
-  loadUsers();
 </script>
 </body>
 </html>
