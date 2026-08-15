@@ -201,6 +201,9 @@
   history.pushState(null, '', location.href);
 
   window.addEventListener('popstate', () => {
+    // 로그인 화면에서는 그냥 종료
+    if (!currentUser) return;
+
     if (blocking) return;
     blocking = true;
     history.go(1);
@@ -219,7 +222,7 @@
     if (document.getElementById('confirm-modal').classList.contains('show')) {
       closeConfirm(); return;
     }
-    // 아무 모달도 없으면 종료 팝업
+    // 로그인 상태면 로그아웃 팝업
     setTimeout(() => openExitModal(), 100);
   });
 
