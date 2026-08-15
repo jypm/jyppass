@@ -54,8 +54,12 @@
       transition: opacity 0.2s;
     }
     .service-card:active { opacity: 0.7; }
+    .service-left { display: flex; flex-direction: column; gap: 4px; }
     .service-name { font-size: 16px; color: #ddd; font-weight: 500; }
+    .service-date { font-size: 11px; color: #444; }
+    .service-right { display: flex; align-items: center; gap: 8px; }
     .service-badge { font-size: 11px; color: #555; background: #1a1a1a; padding: 3px 8px; border-radius: 10px; }
+    .service-arrow { color: #333; font-size: 14px; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 100; }
     .modal.show { display: flex; }
@@ -365,11 +369,24 @@
 
     Object.keys(groups).sort().forEach(serviceName => {
       const items = groups[serviceName];
+      // 마지막 수정일 계산
+      const lastModified = items.reduce((latest, d) => {
+        const t = d.updatedAt || d.createdAt || 0;
+        return t > latest ? t : latest;
+      }, 0);
+      const dateStr = lastModified ? new Date(lastModified).toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' }).replace(/\. /g,'.').replace('.','') : '';
+
       const card = document.createElement('div');
       card.className = 'service-card';
       card.innerHTML = `
-        <span class="service-name">${serviceName}</span>
-        ${items.length > 1 ? `<span class="service-badge">${items.length}개</span>` : ''}
+        <div class="service-left">
+          <span class="service-name">${serviceName}</span>
+          ${dateStr ? `<span class="service-date">${dateStr} 수정</span>` : ''}
+        </div>
+        <div class="service-right">
+          ${items.length > 1 ? `<span class="service-badge">${items.length}개</span>` : ''}
+          <span class="service-arrow">›</span>
+        </div>
       `;
 
       card.addEventListener('click', () => {
@@ -441,9 +458,9 @@
     const memo = document.getElementById('m-memo').value.trim();
     if (!service) { showAlert('서비스명은 필수입니다', '⚠️'); return; }
     if (editingId) {
-      await updateDoc(doc(db, 'passwords', editingId), { service, id, pw, memo });
+      await updateDoc(doc(db, 'passwords', editingId), { service, id, pw, memo, updatedAt: Date.now() });
     } else {
-      await addDoc(collection(db, 'passwords'), { uid: currentUser.id, service, id, pw, memo });
+      await addDoc(collection(db, 'passwords'), { uid: currentUser.id, service, id, pw, memo, updatedAt: Date.now() });
     }
     closeModal();
     loadList();
