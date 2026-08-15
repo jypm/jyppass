@@ -80,21 +80,21 @@
     .masked { font-size: 16px; margin-bottom: 4px; cursor: pointer; padding: 8px; border-radius: 8px; background: #0a0a0a; border: 1px solid #222; color: #aaa; user-select: none; -webkit-user-select: none; }
     .masked .hint { font-size: 11px; color: #444; margin-top: 4px; }
 
-    /* 커스텀 삭제 확인 팝업 */
-    #confirm-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); justify-content: center; align-items: center; z-index: 200; }
-    #confirm-modal.show { display: flex; }
-    .confirm-box { background: #111; border-radius: 16px; padding: 28px 24px; width: 280px; display: flex; flex-direction: column; align-items: center; gap: 16px; border: 1px solid #2a0000; }
-    .confirm-box .confirm-icon { font-size: 36px; }
-    .confirm-box p { font-size: 15px; color: #ccc; text-align: center; line-height: 1.5; }
-    .confirm-box .confirm-name { color: #ff6b6b; font-size: 16px; font-weight: bold; }
-    .confirm-buttons { display: flex; gap: 10px; width: 100%; }
-    .confirm-buttons button { flex: 1; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-size: 14px; }
-    .confirm-yes { background: #3a0000; color: #ff6b6b; }
-    .confirm-no { background: #1a1a1a; color: #888; }
+    /* 커스텀 팝업 공통 */
+    .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); justify-content: center; align-items: center; z-index: 200; }
+    .overlay.show { display: flex; }
+    .popup-box { background: #111; border-radius: 16px; padding: 28px 24px; width: 280px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .popup-box .popup-icon { font-size: 36px; }
+    .popup-box p { font-size: 15px; color: #ccc; text-align: center; line-height: 1.5; }
+    .popup-box .popup-name { color: #ff6b6b; font-size: 16px; font-weight: bold; }
+    .popup-buttons { display: flex; gap: 10px; width: 100%; }
+    .popup-buttons button { flex: 1; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-size: 14px; }
+    .popup-yes-red { background: #3a0000; color: #ff6b6b; }
+    .popup-yes { background: #222; color: #ccc; }
+    .popup-no { background: #1a1a1a; color: #888; }
 
-    /* 뒤로가기 토스트 */
-    #back-toast { display: none; position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: #222; color: #aaa; padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 300; border: 1px solid #333; }
-    #back-toast.show { display: block; }
+    #confirm-modal { border: 1px solid #2a0000; }
+    #exit-modal { border: 1px solid #333; }
   </style>
 </head>
 <body>
@@ -162,20 +162,29 @@
   </div>
 </div>
 
-<!-- 커스텀 삭제 확인 팝업 -->
-<div id="confirm-modal">
-  <div class="confirm-box">
-    <div class="confirm-icon">🗑️</div>
-    <p>삭제하시겠어요?<br><span class="confirm-name" id="confirm-name"></span></p>
-    <div class="confirm-buttons">
-      <button class="confirm-no" onclick="closeConfirm()">취소</button>
-      <button class="confirm-yes" onclick="confirmDelete()">삭제</button>
+<!-- 삭제 확인 팝업 -->
+<div class="overlay" id="confirm-modal">
+  <div class="popup-box" style="border:1px solid #2a0000;">
+    <div class="popup-icon">🗑️</div>
+    <p>삭제하시겠어요?<br><span class="popup-name" id="confirm-name"></span></p>
+    <div class="popup-buttons">
+      <button class="popup-no" onclick="closeConfirm()">취소</button>
+      <button class="popup-yes-red" onclick="confirmDelete()">삭제</button>
     </div>
   </div>
 </div>
 
-<!-- 뒤로가기 토스트 -->
-<div id="back-toast">한 번 더 누르면 종료됩니다</div>
+<!-- 앱 종료 확인 팝업 -->
+<div class="overlay" id="exit-modal">
+  <div class="popup-box" style="border:1px solid #333;">
+    <div class="popup-icon">👋</div>
+    <p>앱을 종료하시겠어요?</p>
+    <div class="popup-buttons">
+      <button class="popup-no" onclick="closeExitModal()">취소</button>
+      <button class="popup-yes" onclick="exitApp()">종료</button>
+    </div>
+  </div>
+</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -199,20 +208,20 @@
   let realId = '';
   let realPw = '';
   let deleteTargetId = '';
-  let deleteTargetName = '';
   let allDocs = [];
   const TIMEOUT = 5 * 60;
 
-  // 뒤로가기 3번 종료
+  // 뒤로가기 2번 → 종료 팝업
   let backCount = 0;
   let backTimer = null;
-  let toastTimer = null;
 
   history.pushState(null, null, location.href);
   window.addEventListener('popstate', () => {
     history.pushState(null, null, location.href);
 
-    // 모달 열려있으면 닫기
+    if (document.getElementById('exit-modal').classList.contains('show')) {
+      closeExitModal(); return;
+    }
     if (document.getElementById('view-modal').classList.contains('show')) {
       closeViewModal(); return;
     }
@@ -225,22 +234,22 @@
 
     backCount++;
     clearTimeout(backTimer);
-    clearTimeout(toastTimer);
-
-    const toast = document.getElementById('back-toast');
-    toast.classList.add('show');
+    backTimer = setTimeout(() => { backCount = 0; }, 2000);
 
     if (backCount >= 2) {
       backCount = 0;
-      toast.classList.remove('show');
-      window.close();
-      // window.close()가 안되는 경우 앱 최소화 시도
-      if (navigator.app) navigator.app.exitApp();
-    } else {
-      backTimer = setTimeout(() => { backCount = 0; }, 2000);
-      toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 2000);
+      document.getElementById('exit-modal').classList.add('show');
     }
   });
+
+  window.closeExitModal = function() {
+    document.getElementById('exit-modal').classList.remove('show');
+  }
+
+  window.exitApp = function() {
+    window.close();
+    if (navigator.app) navigator.app.exitApp();
+  }
 
   // 마스킹
   function mask(str) {
@@ -267,14 +276,12 @@
 
   document.addEventListener('contextmenu', e => e.preventDefault());
 
-  // 아이디 저장
   const savedName = localStorage.getItem('savedName');
   if (savedName) {
     document.getElementById('name-input').value = savedName;
     document.getElementById('save-id').checked = true;
   }
 
-  // 타이머
   function startTimer() {
     let remaining = TIMEOUT;
     clearInterval(timerInterval);
@@ -290,10 +297,8 @@
   function resetTimer() { if (currentUser) startTimer(); }
   ['click','keydown','mousemove','touchstart'].forEach(e => document.addEventListener(e, resetTimer));
 
-  // 검색
   document.getElementById('search-input').addEventListener('input', function() {
-    const keyword = this.value.trim().toLowerCase();
-    renderList(keyword);
+    renderList(this.value.trim().toLowerCase());
   });
 
   window.doLogin = async function() {
@@ -323,8 +328,8 @@
     document.getElementById('timer').textContent = '';
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('main-screen').style.display = 'none';
-    document.getElementById('pin-input').value = '';
     document.getElementById('search-input').value = '';
+    document.getElementById('pin-input').value = '';
   }
 
   async function loadList() {
@@ -349,7 +354,6 @@
     filtered.forEach(data => {
       const card = document.createElement('div');
       card.className = 'card';
-      card.setAttribute('data-id', data.docId);
       card.innerHTML = `
         <div class="card-left">
           <div class="card-info">
@@ -408,10 +412,8 @@
     loadList();
   }
 
-  // 커스텀 삭제 확인
   window.openConfirm = function(docId, name) {
     deleteTargetId = docId;
-    deleteTargetName = name;
     document.getElementById('confirm-name').textContent = name;
     document.getElementById('confirm-modal').classList.add('show');
   }
