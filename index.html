@@ -16,52 +16,23 @@
     body {
       background-color: #0a0a0a;
       background-image:
-        repeating-linear-gradient(
-          120deg,
-          transparent,
-          transparent 80px,
-          rgba(255,255,255,0.012) 80px,
-          rgba(255,255,255,0.012) 81px
-        ),
-        repeating-linear-gradient(
-          60deg,
-          transparent,
-          transparent 100px,
-          rgba(255,255,255,0.008) 100px,
-          rgba(255,255,255,0.008) 101px
-        ),
-        repeating-linear-gradient(
-          90deg,
-          transparent,
-          transparent 140px,
-          rgba(255,255,255,0.006) 140px,
-          rgba(255,255,255,0.006) 141px
-        );
+        repeating-linear-gradient(120deg,transparent,transparent 80px,rgba(255,255,255,0.012) 80px,rgba(255,255,255,0.012) 81px),
+        repeating-linear-gradient(60deg,transparent,transparent 100px,rgba(255,255,255,0.008) 100px,rgba(255,255,255,0.008) 101px),
+        repeating-linear-gradient(90deg,transparent,transparent 140px,rgba(255,255,255,0.006) 140px,rgba(255,255,255,0.006) 141px);
       color: #ccc;
       font-family: 'Segoe UI', sans-serif;
       user-select: none;
       -webkit-user-select: none;
     }
 
-    #login-screen {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; height: 100vh; gap: 12px;
-    }
+    #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 12px; }
     #login-screen h1 { font-size: 22px; color: #888; margin-bottom: 8px; }
     .login-box { display: flex; flex-direction: column; gap: 12px; width: 240px; }
     .save-row { display: flex; justify-content: flex-end; align-items: center; gap: 6px; color: #666; font-size: 13px; }
     .save-row label { cursor: pointer; }
     .save-row input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: #555; }
-    .login-box input {
-      padding: 12px 16px; border-radius: 10px; border: 1px solid #333;
-      background: #111; color: #ccc; font-size: 16px; width: 100%;
-      user-select: text; -webkit-user-select: text;
-    }
-    .login-box button {
-      padding: 12px; border-radius: 10px; border: 1px solid #333;
-      background: #111; color: #aaa; font-size: 16px; cursor: pointer; width: 100%;
-      margin-top: 8px;
-    }
+    .login-box input { padding: 12px 16px; border-radius: 10px; border: 1px solid #333; background: #111; color: #ccc; font-size: 16px; width: 100%; user-select: text; -webkit-user-select: text; }
+    .login-box button { padding: 12px; border-radius: 10px; border: 1px solid #333; background: #111; color: #aaa; font-size: 16px; cursor: pointer; width: 100%; margin-top: 8px; }
     .login-link { font-size: 13px; color: #444; text-align: center; cursor: pointer; }
     .login-link:hover { color: #666; }
     .pin-hint { font-size: 11px; color: #444; text-align: right; margin-top: -6px; }
@@ -100,10 +71,6 @@
     .id-list-item { padding: 14px; border-radius: 8px; background: #0d0d0d; border: 1px solid #1a1a1a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: opacity 0.2s; }
     .id-list-item:active { opacity: 0.7; }
     .id-list-item p { font-size: 14px; color: #bbb; }
-    .id-list-actions { display: flex; gap: 8px; }
-    .id-list-actions button { width: 32px; height: 32px; border-radius: 8px; border: none; cursor: pointer; font-size: 16px; background: transparent; }
-    .btn-edit { color: #6a9fd8; }
-    .btn-del { color: #c0392b; }
 
     .masked { font-size: 16px; margin-bottom: 4px; cursor: pointer; padding: 8px; border-radius: 8px; background: #0a0a0a; border: 1px solid #222; color: #aaa; user-select: none; -webkit-user-select: none; }
     .masked .hint { font-size: 11px; color: #444; margin-top: 4px; }
@@ -141,8 +108,8 @@
       <input type="checkbox" id="save-id">
     </div>
     <input type="text" id="name-input" placeholder="아이디" autocomplete="username">
-    <input type="number" id="pin-input" placeholder="비밀번호 (숫자 4자리)" maxlength="4" pattern="[0-9]*" inputmode="numeric">
-    <div class="pin-hint">숫자 4자리</div>
+    <input type="password" id="pin-input" placeholder="비밀번호" inputmode="numeric">
+    <div class="pin-hint">숫자 6자리</div>
     <button onclick="doLogin()">로그인</button>
     <div class="login-link" onclick="openRegisterModal()">초대코드로 가입하기</div>
   </div>
@@ -172,10 +139,10 @@
     <div class="field-label">사용할 아이디</div>
     <input type="text" id="r-name" placeholder="아이디" autocomplete="username">
     <div class="field-label">비밀번호</div>
-    <input type="number" id="r-pin" placeholder="숫자 4자리" maxlength="4" pattern="[0-9]*" inputmode="numeric">
+    <input type="password" id="r-pin" placeholder="숫자 6자리" inputmode="numeric">
     <div class="field-label">비밀번호 확인</div>
-    <input type="number" id="r-pin2" placeholder="숫자 4자리 확인" maxlength="4" pattern="[0-9]*" inputmode="numeric">
-    <div class="pin-hint">숫자 4자리</div>
+    <input type="password" id="r-pin2" placeholder="숫자 6자리 확인" inputmode="numeric">
+    <div class="pin-hint">숫자 6자리</div>
     <button class="btn-save" onclick="doRegister()">가입하기</button>
     <button class="btn-cancel" onclick="closeRegisterModal()">취소</button>
   </div>
@@ -233,12 +200,12 @@
   <div class="popup-box" style="border:1px solid #333;">
     <div class="popup-icon">🔑</div>
     <p style="text-align:left;font-size:13px;color:#888;">현재 비밀번호</p>
-    <input type="number" class="popup-input" id="cp-old" placeholder="현재 비밀번호" maxlength="4" pattern="[0-9]*" inputmode="numeric">
+    <input type="password" class="popup-input" id="cp-old" placeholder="현재 비밀번호" inputmode="numeric">
     <p style="text-align:left;font-size:13px;color:#888;">새 비밀번호</p>
-    <input type="number" class="popup-input" id="cp-new" placeholder="숫자 4자리" maxlength="4" pattern="[0-9]*" inputmode="numeric">
+    <input type="password" class="popup-input" id="cp-new" placeholder="숫자 6자리" inputmode="numeric">
     <p style="text-align:left;font-size:13px;color:#888;">새 비밀번호 확인</p>
-    <input type="number" class="popup-input" id="cp-new2" placeholder="숫자 4자리 확인" maxlength="4" pattern="[0-9]*" inputmode="numeric">
-    <p style="font-size:11px;color:#444;text-align:right;">숫자 4자리</p>
+    <input type="password" class="popup-input" id="cp-new2" placeholder="숫자 6자리 확인" inputmode="numeric">
+    <p style="font-size:11px;color:#444;text-align:right;">숫자 6자리</p>
     <div class="popup-buttons">
       <button class="popup-no" onclick="closeChangePwModal()">취소</button>
       <button class="popup-yes" onclick="doChangePw()">변경</button>
@@ -299,6 +266,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
   import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDWu9mmACrAqv3P-VW54DogZ61ZzraW5Yg",
@@ -311,6 +279,12 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // 아이디 → 이메일 변환 (내부용)
+  function toEmail(name) {
+    return name.trim().toLowerCase() + '@jyppass.com';
+  }
 
   let currentUser = null;
   let editingId = null;
@@ -325,14 +299,6 @@
   window.currentViewIdVal = '';
   window.currentViewPw = '';
   window.currentViewMemo = '';
-
-  // 숫자 4자리 제한
-  ['pin-input','r-pin','r-pin2','cp-old','cp-new','cp-new2'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', function() {
-      if (this.value.length > 4) this.value = this.value.slice(0, 4);
-    });
-  });
 
   let blocking = false;
   history.pushState(null, '', location.href);
@@ -415,37 +381,50 @@
     renderList(this.value.trim().toLowerCase());
   });
 
+  // ── 로그인 ──
   window.doLogin = async function() {
     const name = document.getElementById('name-input').value.trim();
     const pin = document.getElementById('pin-input').value.trim();
     const saveId = document.getElementById('save-id').checked;
     if (!name || !pin) { showAlert('아이디와 비밀번호를 입력하세요'); return; }
-    if (pin.length !== 4) { showAlert('비밀번호는 숫자 4자리예요', '❌'); return; }
-    const snap = await getDocs(query(collection(db, 'users'), where('name', '==', name)));
-    if (snap.empty) { showAlert('사용자를 찾을 수 없어요', '🔍'); return; }
-    const userDoc = snap.docs[0];
-    const user = userDoc.data();
-    if (user.pin !== pin) { showAlert('비밀번호가 틀렸어요', '❌'); return; }
-    if (saveId) localStorage.setItem('savedName', name);
-    else localStorage.removeItem('savedName');
-    currentUser = { id: userDoc.id, ...user };
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('main-screen').style.display = 'block';
-    document.getElementById('welcome-text').textContent = name + '님';
-    document.getElementById('pin-input').value = '';
-    if (user.isAdmin) {
-      document.getElementById('admin-btn').style.display = '';
-      document.getElementById('changepw-btn').style.display = 'none';
-    } else {
-      document.getElementById('admin-btn').style.display = 'none';
-      document.getElementById('changepw-btn').style.display = '';
+    if (pin.length < 6) { showAlert('비밀번호는 숫자 6자리예요', '❌'); return; }
+    try {
+      const email = toEmail(name);
+      const cred = await signInWithEmailAndPassword(auth, email, pin);
+      const uid = cred.user.uid;
+      // users 컬렉션에서 사용자 정보 조회
+      const snap = await getDocs(query(collection(db, 'users'), where('uid', '==', uid)));
+      let userData = { isAdmin: false, name };
+      if (!snap.empty) userData = snap.docs[0].data();
+      if (saveId) localStorage.setItem('savedName', name);
+      else localStorage.removeItem('savedName');
+      currentUser = { uid, ...userData };
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-screen').style.display = 'block';
+      document.getElementById('welcome-text').textContent = name + '님';
+      document.getElementById('pin-input').value = '';
+      if (userData.isAdmin) {
+        document.getElementById('admin-btn').style.display = '';
+        document.getElementById('changepw-btn').style.display = 'none';
+      } else {
+        document.getElementById('admin-btn').style.display = 'none';
+        document.getElementById('changepw-btn').style.display = '';
+      }
+      for (let i = 0; i < 5; i++) history.pushState(null, '', location.href);
+      startTimer();
+      loadList();
+    } catch(e) {
+      if (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found') {
+        showAlert('아이디 또는 비밀번호가 틀렸어요', '❌');
+      } else {
+        showAlert('로그인 실패: ' + e.message, '❌');
+      }
     }
-    for (let i = 0; i < 5; i++) history.pushState(null, '', location.href);
-    startTimer();
-    loadList();
   }
 
-  window.doLogout = function() {
+  // ── 로그아웃 ──
+  window.doLogout = async function() {
+    await signOut(auth);
     currentUser = null;
     clearInterval(timerInterval);
     document.getElementById('timer').textContent = '';
@@ -456,6 +435,7 @@
     history.go(-(history.length - 1));
   }
 
+  // ── 가입 ──
   window.openRegisterModal = function() { document.getElementById('register-modal').classList.add('show'); }
   window.closeRegisterModal = function() { document.getElementById('register-modal').classList.remove('show'); }
 
@@ -465,18 +445,29 @@
     const pin = document.getElementById('r-pin').value.trim();
     const pin2 = document.getElementById('r-pin2').value.trim();
     if (!code || !name || !pin) { showAlert('모든 항목을 입력하세요'); return; }
-    if (pin.length !== 4) { showAlert('비밀번호는 숫자 4자리예요', '❌'); return; }
+    if (pin.length < 6) { showAlert('비밀번호는 숫자 6자리예요', '❌'); return; }
     if (pin !== pin2) { showAlert('비밀번호가 일치하지 않아요', '❌'); return; }
+    // 초대코드 확인
     const codeSnap = await getDocs(query(collection(db, 'inviteCodes'), where('code', '==', code), where('used', '==', false)));
     if (codeSnap.empty) { showAlert('유효하지 않은 초대코드예요', '❌'); return; }
+    // 아이디 중복 확인
     const nameSnap = await getDocs(query(collection(db, 'users'), where('name', '==', name)));
     if (!nameSnap.empty) { showAlert('이미 사용 중인 아이디예요', '❌'); return; }
-    await addDoc(collection(db, 'users'), { name, pin, isAdmin: false });
-    await updateDoc(doc(db, 'inviteCodes', codeSnap.docs[0].id), { used: true });
-    closeRegisterModal();
-    showAlert('가입 완료! 로그인해주세요', '🎉');
+    try {
+      const email = toEmail(name);
+      const cred = await createUserWithEmailAndPassword(auth, email, pin);
+      const uid = cred.user.uid;
+      await addDoc(collection(db, 'users'), { uid, name, isAdmin: false });
+      await updateDoc(doc(db, 'inviteCodes', codeSnap.docs[0].id), { used: true });
+      await signOut(auth);
+      closeRegisterModal();
+      showAlert('가입 완료! 로그인해주세요', '🎉');
+    } catch(e) {
+      showAlert('가입 실패: ' + e.message, '❌');
+    }
   }
 
+  // ── 비밀번호 변경 ──
   window.openChangePwModal = function() {
     document.getElementById('cp-old').value = '';
     document.getElementById('cp-new').value = '';
@@ -490,15 +481,25 @@
     const newPw = document.getElementById('cp-new').value.trim();
     const newPw2 = document.getElementById('cp-new2').value.trim();
     if (!oldPw || !newPw || !newPw2) { showAlert('모든 항목을 입력하세요'); return; }
-    if (newPw.length !== 4) { showAlert('비밀번호는 숫자 4자리예요', '❌'); return; }
-    if (oldPw !== currentUser.pin) { showAlert('현재 비밀번호가 틀렸어요', '❌'); return; }
+    if (newPw.length < 6) { showAlert('비밀번호는 숫자 6자리예요', '❌'); return; }
     if (newPw !== newPw2) { showAlert('새 비밀번호가 일치하지 않아요', '❌'); return; }
-    await updateDoc(doc(db, 'users', currentUser.id), { pin: newPw });
-    currentUser.pin = newPw;
-    closeChangePwModal();
-    showAlert('비밀번호가 변경됐어요', '✅');
+    try {
+      const user = auth.currentUser;
+      const credential = EmailAuthProvider.credential(user.email, oldPw);
+      await reauthenticateWithCredential(user, credential);
+      await updatePassword(user, newPw);
+      closeChangePwModal();
+      showAlert('비밀번호가 변경됐어요', '✅');
+    } catch(e) {
+      if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+        showAlert('현재 비밀번호가 틀렸어요', '❌');
+      } else {
+        showAlert('변경 실패: ' + e.message, '❌');
+      }
+    }
   }
 
+  // ── 관리자 ──
   window.openAdminModal = async function() {
     document.getElementById('invite-code-box').style.display = 'none';
     document.getElementById('admin-modal').classList.add('show');
@@ -520,16 +521,16 @@
           <span>${user.isAdmin ? '관리자' : '일반'}</span>
         </div>
         <div class="admin-user-actions">
-          ${!user.isAdmin ? `<button style="background:#2a0000;color:#ff6b6b;" onclick="deleteUser('${d.id}','${user.name}')">삭제</button>` : ''}
+          ${!user.isAdmin ? `<button style="background:#2a0000;color:#ff6b6b;" onclick="deleteUser('${d.id}','${user.name}','${user.uid}')">삭제</button>` : ''}
         </div>
       `;
       listEl.appendChild(item);
     });
   }
 
-  window.deleteUser = async function(uid, name) {
+  window.deleteUser = async function(docId, name, uid) {
     if (!confirm(`${name} 계정을 삭제할까요?`)) return;
-    await deleteDoc(doc(db, 'users', uid));
+    await deleteDoc(doc(db, 'users', docId));
     await loadAdminUsers();
   }
 
@@ -548,8 +549,9 @@
     });
   }
 
+  // ── 목록 ──
   async function loadList() {
-    const q = query(collection(db, 'passwords'), where('uid', '==', currentUser.id));
+    const q = query(collection(db, 'passwords'), where('uid', '==', currentUser.uid));
     const snap = await getDocs(q);
     allDocs = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
     renderList('');
@@ -561,27 +563,20 @@
     const filtered = keyword
       ? allDocs.filter(d => (d.service||'').toLowerCase().includes(keyword) || (d.id||'').toLowerCase().includes(keyword))
       : allDocs;
-
     if (filtered.length === 0) {
       listEl.innerHTML = '<p style="color:#444;text-align:center;margin-top:40px;">검색 결과 없음</p>';
       return;
     }
-
     const groups = {};
     filtered.forEach(data => {
       const key = data.service || '(서비스명 없음)';
       if (!groups[key]) groups[key] = [];
       groups[key].push(data);
     });
-
     Object.keys(groups).sort((a, b) => a.localeCompare(b, 'ko')).forEach(serviceName => {
       const items = groups[serviceName];
-      const lastModified = items.reduce((latest, d) => {
-        const t = d.updatedAt || 0;
-        return t > latest ? t : latest;
-      }, 0);
+      const lastModified = items.reduce((latest, d) => { const t = d.updatedAt || 0; return t > latest ? t : latest; }, 0);
       const dateStr = lastModified ? new Date(lastModified).toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' }) : '';
-
       const card = document.createElement('div');
       card.className = 'service-card';
       card.innerHTML = `
@@ -648,7 +643,6 @@
     document.getElementById('m-memo').value = memo;
     document.getElementById('modal').classList.add('show');
   }
-
   window.closeModal = function() { document.getElementById('modal').classList.remove('show'); }
 
   window.saveEntry = async function() {
@@ -660,7 +654,7 @@
     if (editingId) {
       await updateDoc(doc(db, 'passwords', editingId), { service, id, pw, memo, updatedAt: Date.now() });
     } else {
-      await addDoc(collection(db, 'passwords'), { uid: currentUser.id, service, id, pw, memo, updatedAt: Date.now() });
+      await addDoc(collection(db, 'passwords'), { uid: currentUser.uid, service, id, pw, memo, updatedAt: Date.now() });
     }
     closeModal();
     loadList();
@@ -696,7 +690,13 @@
     }
     document.getElementById('view-modal').classList.add('show');
   }
-  window.closeViewModal = function() { document.getElementById('view-modal').classList.remove('show'); if (window.viewFromIdList) { document.getElementById('id-list-modal').classList.add('show'); window.viewFromIdList = false; } }
+  window.closeViewModal = function() {
+    document.getElementById('view-modal').classList.remove('show');
+    if (window.viewFromIdList) {
+      document.getElementById('id-list-modal').classList.add('show');
+      window.viewFromIdList = false;
+    }
+  }
 </script>
 </body>
 </html>
