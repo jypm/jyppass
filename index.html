@@ -108,7 +108,7 @@
       <input type="checkbox" id="save-id">
     </div>
     <input type="text" id="name-input" placeholder="아이디" autocomplete="username">
-    <input type="password" id="pin-input" placeholder="비밀번호" inputmode="numeric">
+    <input type="password" id="pin-input" placeholder="비밀번호" inputmode="numeric" maxlength="6">
     <div class="pin-hint">숫자 6자리</div>
     <button onclick="doLogin()">로그인</button>
     <div class="login-link" onclick="openRegisterModal()">초대코드로 가입하기</div>
@@ -139,9 +139,9 @@
     <div class="field-label">사용할 아이디</div>
     <input type="text" id="r-name" placeholder="아이디" autocomplete="username">
     <div class="field-label">비밀번호</div>
-    <input type="password" id="r-pin" placeholder="숫자 6자리" inputmode="numeric">
+    <input type="password" id="r-pin" placeholder="숫자 6자리" inputmode="numeric" maxlength="6">
     <div class="field-label">비밀번호 확인</div>
-    <input type="password" id="r-pin2" placeholder="숫자 6자리 확인" inputmode="numeric">
+    <input type="password" id="r-pin2" placeholder="숫자 6자리 확인" inputmode="numeric" maxlength="6">
     <div class="pin-hint">숫자 6자리</div>
     <button class="btn-save" onclick="doRegister()">가입하기</button>
     <button class="btn-cancel" onclick="closeRegisterModal()">취소</button>
@@ -200,11 +200,11 @@
   <div class="popup-box" style="border:1px solid #333;">
     <div class="popup-icon">🔑</div>
     <p style="text-align:left;font-size:13px;color:#888;">현재 비밀번호</p>
-    <input type="password" class="popup-input" id="cp-old" placeholder="현재 비밀번호" inputmode="numeric">
+    <input type="password" class="popup-input" id="cp-old" placeholder="현재 비밀번호" inputmode="numeric" maxlength="6">
     <p style="text-align:left;font-size:13px;color:#888;">새 비밀번호</p>
-    <input type="password" class="popup-input" id="cp-new" placeholder="숫자 6자리" inputmode="numeric">
+    <input type="password" class="popup-input" id="cp-new" placeholder="숫자 6자리" inputmode="numeric" maxlength="6">
     <p style="text-align:left;font-size:13px;color:#888;">새 비밀번호 확인</p>
-    <input type="password" class="popup-input" id="cp-new2" placeholder="숫자 6자리 확인" inputmode="numeric">
+    <input type="password" class="popup-input" id="cp-new2" placeholder="숫자 6자리 확인" inputmode="numeric" maxlength="6">
     <p style="font-size:11px;color:#444;text-align:right;">숫자 6자리</p>
     <div class="popup-buttons">
       <button class="popup-no" onclick="closeChangePwModal()">취소</button>
@@ -387,7 +387,8 @@
     const pin = document.getElementById('pin-input').value.trim();
     const saveId = document.getElementById('save-id').checked;
     if (!name || !pin) { showAlert('아이디와 비밀번호를 입력하세요'); return; }
-    if (pin.length < 6) { showAlert('비밀번호는 숫자 6자리예요', '❌'); return; }
+    if (!/^[a-zA-Z0-9]+$/.test(name)) { showAlert('아이디는 영문+숫자만 가능해요', '❌'); return; }
+    if (!/^\d{6}$/.test(pin)) { showAlert('비밀번호는 숫자 6자리예요', '❌'); return; }
     try {
       const email = toEmail(name);
       const cred = await signInWithEmailAndPassword(auth, email, pin);
