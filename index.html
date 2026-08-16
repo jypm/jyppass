@@ -688,7 +688,12 @@
     document.getElementById('v-service').textContent = service;
     document.getElementById('v-id').textContent = id || '(없음)';
     document.getElementById('v-pw').textContent = mask(pw);
-    document.getElementById('v-memo').textContent = memo || '-';
+    const memoEl = document.getElementById('v-memo');
+    if (memo) {
+      memoEl.innerHTML = memo.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#6a9fd8;word-break:break-all;">$1</a>');
+    } else {
+      memoEl.textContent = '-';
+    }
     document.getElementById('view-modal').classList.add('show');
   }
   window.closeViewModal = function() { document.getElementById('view-modal').classList.remove('show'); if (window.viewFromIdList) { document.getElementById('id-list-modal').classList.add('show'); window.viewFromIdList = false; } }
