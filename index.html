@@ -445,7 +445,8 @@
     const pin = document.getElementById('r-pin').value.trim();
     const pin2 = document.getElementById('r-pin2').value.trim();
     if (!code || !name || !pin) { showAlert('모든 항목을 입력하세요'); return; }
-    if (pin.length < 6) { showAlert('비밀번호는 숫자 6자리예요', '❌'); return; }
+    if (!/^[a-zA-Z0-9]+$/.test(name)) { showAlert('아이디는 영문+숫자만 가능해요', '❌'); return; }
+    if (!/^\d{6}$/.test(pin)) { showAlert('비밀번호는 숫자 6자리예요', '❌'); return; }
     if (pin !== pin2) { showAlert('비밀번호가 일치하지 않아요', '❌'); return; }
     // 초대코드 확인
     const codeSnap = await getDocs(query(collection(db, 'inviteCodes'), where('code', '==', code), where('used', '==', false)));
@@ -481,7 +482,7 @@
     const newPw = document.getElementById('cp-new').value.trim();
     const newPw2 = document.getElementById('cp-new2').value.trim();
     if (!oldPw || !newPw || !newPw2) { showAlert('모든 항목을 입력하세요'); return; }
-    if (newPw.length < 6) { showAlert('비밀번호는 숫자 6자리예요', '❌'); return; }
+    if (!/^\d{6}$/.test(newPw)) { showAlert('비밀번호는 숫자 6자리예요', '❌'); return; }
     if (newPw !== newPw2) { showAlert('새 비밀번호가 일치하지 않아요', '❌'); return; }
     try {
       const user = auth.currentUser;
