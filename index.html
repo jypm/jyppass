@@ -82,12 +82,12 @@
     .service-card:active { opacity: 0.7; }
     .service-left { display: flex; flex-direction: column; gap: 4px; }
     .service-name { font-size: 20px; color: #eee; font-weight: 500; }
-    .service-date { font-size: 11px; color: #3a3a3a; }
+    .service-date { font-size: 11px; color: #3a9966; }
     .service-right { display: flex; align-items: center; gap: 8px; }
     .service-badge { font-size: 11px; color: #55fa9f; background: #1a1a1a; padding: 3px 8px; border-radius: 10px; }
     .service-arrow { color: #333; font-size: 14px; }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 100; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 300; }
     .modal.show { display: flex; }
     .modal-box { background: #111; border-radius: 14px; padding: 24px; width: 320px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #222; }
     .modal-box h3 { color: #888; margin-bottom: 4px; }
@@ -616,10 +616,7 @@
       item.className = 'id-list-item';
       item.innerHTML = `
         <p>${data.id || '(아이디 없음)'}</p>
-        <div class="id-list-actions">
-          <button class="btn-edit" onclick="event.stopPropagation();closeIdListModal();openEditModal('${data.docId}','${data.service||''}','${data.id||''}','${data.pw||''}','${data.memo||''}')">✏️</button>
-          <button class="btn-del" onclick="event.stopPropagation();closeIdListModal();openConfirm('${data.docId}','${data.service||''}')">🗑️</button>
-        </div>
+        <span style="color:#444;font-size:14px;">›</span>
       `;
       item.addEventListener('click', () => {
         document.getElementById('id-list-modal').classList.remove('show');
