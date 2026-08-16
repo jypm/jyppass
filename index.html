@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
-  <title>JYP 비밀번호 관리</title>
+  <title>보안창고 관리</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; overflow: hidden; overscroll-behavior-y: contain; }
@@ -101,7 +101,7 @@
 <body>
 
 <div id="login-screen">
-  <h1>🔐 비밀번호 관리</h1>
+  <h1>🔐 보안창고 관리</h1>
   <div class="login-box">
     <div class="save-row">
       <label for="save-id">아이디 저장</label>
@@ -545,7 +545,7 @@
 
   window.copyInviteLink = function() {
     const code = document.getElementById('invite-code-text').textContent;
-    const text = `JYP 비밀번호 관리 초대 🔐\nhttps://jypm.github.io/jyppass/\n초대코드: ${code}`;
+    const text = `보안창고 관리 초대 🔐\nhttps://jypm.github.io/jyppass/\n초대코드: ${code}`;
     navigator.clipboard.writeText(text).then(() => {
       showAlert('클립보드에 복사됐어요!', '✅');
     });
